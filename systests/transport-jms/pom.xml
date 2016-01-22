@@ -129,7 +129,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-transports-http-jetty</artifactId>
+            <artifactId>cxf-rt-transports-http-undertow</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

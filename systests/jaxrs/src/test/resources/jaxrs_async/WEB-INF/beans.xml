@@ -41,7 +41,7 @@
             <bean class="org.apache.cxf.systest.jaxrs.BookContinuationFilter"/>
         </jaxrs:providers>        
         <jaxrs:properties>
-            <entry key="disconnected.client.exception.class" value="org.eclipse.jetty.io.EofException"/>
+            <entry key="disconnected.client.exception.class" value="org.eclipse.undertow.io.EofException"/>
         </jaxrs:properties>
     </jaxrs:server>
     

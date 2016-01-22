@@ -1,0 +1,86 @@
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Apache CXF Undertow Transport System Tests 3.1.5-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.10:tree (default-cli) @ cxf-systests-transport-undertow ---
+[INFO] org.apache.cxf.systests:cxf-systests-transport-undertow:jar:3.1.5-SNAPSHOT
+[INFO] +- org.apache.cxf:cxf-core:jar:3.1.5-SNAPSHOT:compile
+[INFO] |  +- org.codehaus.woodstox:woodstox-core-asl:jar:4.4.1:compile
+[INFO] |  |  \- org.codehaus.woodstox:stax2-api:jar:3.1.4:compile
+[INFO] |  \- org.apache.ws.xmlschema:xmlschema-core:jar:2.2.1:compile
+[INFO] +- org.apache.cxf:cxf-rt-databinding-jaxb:jar:3.1.5-SNAPSHOT:compile
+[INFO] |  +- org.apache.cxf:cxf-rt-wsdl:jar:3.1.5-SNAPSHOT:compile
+[INFO] |  +- com.sun.xml.bind:jaxb-impl:jar:2.2.11:compile
+[INFO] |  \- com.sun.xml.bind:jaxb-core:jar:2.2.11:compile
+[INFO] +- org.apache.cxf:cxf-rt-frontend-jaxws:jar:3.1.5-SNAPSHOT:compile
+[INFO] |  +- xml-resolver:xml-resolver:jar:1.2:compile
+[INFO] |  +- org.ow2.asm:asm:jar:5.0.4:compile
+[INFO] |  +- org.apache.cxf:cxf-rt-bindings-xml:jar:3.1.5-SNAPSHOT:compile
+[INFO] |  +- org.apache.cxf:cxf-rt-frontend-simple:jar:3.1.5-SNAPSHOT:compile
+[INFO] |  \- org.apache.cxf:cxf-rt-ws-addr:jar:3.1.5-SNAPSHOT:compile
+[INFO] +- org.apache.cxf:cxf-rt-frontend-js:jar:3.1.5-SNAPSHOT:compile
+[INFO] |  \- org.apache.xmlbeans:xmlbeans:jar:2.6.0:compile
+[INFO] +- org.apache.cxf:cxf-rt-bindings-soap:jar:3.1.5-SNAPSHOT:compile
+[INFO] +- org.apache.cxf:cxf-rt-databinding-aegis:jar:3.1.5-SNAPSHOT:compile
+[INFO] +- org.apache.cxf:cxf-rt-transports-http:jar:3.1.5-SNAPSHOT:compile
+[INFO] +- org.apache.cxf:cxf-rt-transports-http-hc:jar:3.1.5-SNAPSHOT:compile
+[INFO] |  +- org.slf4j:slf4j-api:jar:1.7.12:compile
+[INFO] |  +- org.apache.httpcomponents:httpcore-nio:jar:4.4.1:compile
+[INFO] |  |  \- org.apache.httpcomponents:httpcore:jar:4.4.1:compile
+[INFO] |  \- org.apache.httpcomponents:httpasyncclient:jar:4.1:compile
+[INFO] |     \- org.apache.httpcomponents:httpclient:jar:4.4.1:compile
+[INFO] +- org.apache.cxf:cxf-rt-transports-udp:jar:3.1.5-SNAPSHOT:compile
+[INFO] |  \- org.apache.mina:mina-core:jar:2.0.9:compile
+[INFO] +- org.apache.cxf:cxf-rt-transports-http-undertow:jar:3.1.5-SNAPSHOT:compile
+[INFO] |  +- io.undertow:undertow-core:jar:1.3.7.Final:compile
+[INFO] |  |  +- org.jboss.logging:jboss-logging:jar:3.2.1.Final:compile
+[INFO] |  |  +- org.jboss.xnio:xnio-api:jar:3.3.2.Final:compile
+[INFO] |  |  \- org.jboss.xnio:xnio-nio:jar:3.3.2.Final:runtime
+[INFO] |  \- io.undertow:undertow-servlet:jar:1.3.7.Final:compile
+[INFO] |     +- org.jboss.spec.javax.servlet:jboss-servlet-api_3.1_spec:jar:1.0.0.Final:compile
+[INFO] |     \- org.jboss.spec.javax.annotation:jboss-annotations-api_1.2_spec:jar:1.0.0.Final:compile
+[INFO] +- org.slf4j:slf4j-jdk14:jar:1.7.12:test
+[INFO] +- org.slf4j:jcl-over-slf4j:jar:1.7.12:test
+[INFO] +- org.apache.cxf:cxf-rt-transports-local:jar:3.1.5-SNAPSHOT:compile
+[INFO] +- org.apache.cxf:cxf-rt-ws-policy:jar:3.1.5-SNAPSHOT:compile
+[INFO] |  +- wsdl4j:wsdl4j:jar:1.6.3:compile
+[INFO] |  \- org.apache.neethi:neethi:jar:3.0.3:compile
+[INFO] +- org.apache.cxf:cxf-rt-frontend-jaxrs:jar:3.1.5-SNAPSHOT:compile
+[INFO] |  +- javax.ws.rs:javax.ws.rs-api:jar:2.0.1:compile
+[INFO] |  \- javax.annotation:javax.annotation-api:jar:1.2:compile
+[INFO] +- org.apache.cxf:cxf-testutils:jar:3.1.5-SNAPSHOT:test
+[INFO] +- org.springframework:spring-web:jar:4.1.7.RELEASE:test
+[INFO] |  \- org.springframework:spring-aop:jar:4.1.7.RELEASE:test
+[INFO] |     \- aopalliance:aopalliance:jar:1.0:test
+[INFO] +- org.springframework:spring-webmvc:jar:4.1.7.RELEASE:test
+[INFO] |  \- org.springframework:spring-expression:jar:4.1.7.RELEASE:test
+[INFO] +- org.springframework:spring-beans:jar:4.1.7.RELEASE:test
+[INFO] +- org.springframework:spring-context:jar:4.1.7.RELEASE:test
+[INFO] +- httpunit:httpunit:jar:1.7:test
+[INFO] +- nekohtml:nekohtml:jar:1.9.6.2:test
+[INFO] |  \- xerces:xercesImpl:jar:2.11.0:test
+[INFO] |     \- xml-apis:xml-apis:jar:1.4.01:test
+[INFO] +- org.springframework:spring-core:jar:4.1.7.RELEASE:compile
+[INFO] +- org.springframework:spring-test:jar:4.1.7.RELEASE:compile
+[INFO] +- junit:junit:jar:4.12:test
+[INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO] +- org.apache.geronimo.specs:geronimo-j2ee-connector_1.5_spec:jar:2.0.0:compile
+[INFO] +- org.apache.geronimo.specs:geronimo-servlet_3.0_spec:jar:1.0:test
+[INFO] +- rhino:js:jar:1.7R2:test
+[INFO] +- org.codehaus.jettison:jettison:jar:1.3.7:test
+[INFO] +- commons-httpclient:commons-httpclient:jar:3.1:test
+[INFO] |  \- commons-codec:commons-codec:jar:1.10:compile
+[INFO] \- org.littleshoot:littleproxy:jar:0.4:compile
+[INFO]    +- commons-io:commons-io:jar:2.0.1:compile
+[INFO]    +- commons-lang:commons-lang:jar:2.6:compile
+[INFO]    +- net.sf.ehcache:ehcache-core:jar:2.2.0:compile
+[INFO]    \- org.jboss.netty:netty:jar:3.2.4.Final:compile
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 1.779s
+[INFO] Finished at: Mon Dec 14 15:48:05 CST 2015
+[INFO] Final Memory: 21M/310M
+[INFO] ------------------------------------------------------------------------
