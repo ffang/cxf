@@ -1,0 +1,95 @@
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Apache CXF WS-Security System Tests 3.1.5-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.10:tree (default-cli) @ cxf-systests-ws-security ---
+[INFO] org.apache.cxf.systests:cxf-systests-ws-security:jar:3.1.5-SNAPSHOT
+[INFO] +- org.slf4j:slf4j-jdk14:jar:1.7.12:test
+[INFO] |  \- org.slf4j:slf4j-api:jar:1.7.12:compile
+[INFO] +- org.slf4j:jcl-over-slf4j:jar:1.7.12:test
+[INFO] +- org.apache.cxf:cxf-core:jar:3.1.5-SNAPSHOT:compile
+[INFO] |  +- org.codehaus.woodstox:woodstox-core-asl:jar:4.4.1:compile
+[INFO] |  |  \- org.codehaus.woodstox:stax2-api:jar:3.1.4:compile
+[INFO] |  \- org.apache.ws.xmlschema:xmlschema-core:jar:2.2.1:compile
+[INFO] +- org.apache.cxf:cxf-rt-security:jar:3.1.5-SNAPSHOT:compile
+[INFO] +- org.apache.cxf:cxf-rt-databinding-jaxb:jar:3.1.5-SNAPSHOT:compile
+[INFO] |  +- org.apache.cxf:cxf-rt-wsdl:jar:3.1.5-SNAPSHOT:compile
+[INFO] |  +- com.sun.xml.bind:jaxb-impl:jar:2.2.11:compile
+[INFO] |  \- com.sun.xml.bind:jaxb-core:jar:2.2.11:compile
+[INFO] +- org.apache.cxf:cxf-rt-frontend-jaxws:jar:3.1.5-SNAPSHOT:compile
+[INFO] |  +- xml-resolver:xml-resolver:jar:1.2:compile
+[INFO] |  +- org.ow2.asm:asm:jar:5.0.4:compile
+[INFO] |  +- org.apache.cxf:cxf-rt-bindings-xml:jar:3.1.5-SNAPSHOT:compile
+[INFO] |  \- org.apache.cxf:cxf-rt-frontend-simple:jar:3.1.5-SNAPSHOT:compile
+[INFO] +- org.apache.cxf:cxf-rt-rs-client:jar:3.1.5-SNAPSHOT:compile
+[INFO] |  \- org.apache.cxf:cxf-rt-frontend-jaxrs:jar:3.1.5-SNAPSHOT:compile
+[INFO] |     +- javax.ws.rs:javax.ws.rs-api:jar:2.0.1:compile
+[INFO] |     \- javax.annotation:javax.annotation-api:jar:1.2:compile
+[INFO] +- org.apache.cxf:cxf-rt-bindings-soap:jar:3.1.5-SNAPSHOT:compile
+[INFO] +- org.apache.cxf:cxf-rt-transports-http:jar:3.1.5-SNAPSHOT:compile
+[INFO] +- org.apache.cxf:cxf-rt-transports-http-undertow:jar:3.1.5-SNAPSHOT:compile
+[INFO] |  +- io.undertow:undertow-core:jar:1.3.7.Final:compile
+[INFO] |  |  +- org.jboss.logging:jboss-logging:jar:3.2.1.Final:compile
+[INFO] |  |  +- org.jboss.xnio:xnio-api:jar:3.3.2.Final:compile
+[INFO] |  |  \- org.jboss.xnio:xnio-nio:jar:3.3.2.Final:runtime
+[INFO] |  +- io.undertow:undertow-servlet:jar:1.3.7.Final:compile
+[INFO] |  |  +- org.jboss.spec.javax.servlet:jboss-servlet-api_3.1_spec:jar:1.0.0.Final:compile
+[INFO] |  |  \- org.jboss.spec.javax.annotation:jboss-annotations-api_1.2_spec:jar:1.0.0.Final:compile
+[INFO] |  \- org.apache.geronimo.specs:geronimo-servlet_3.0_spec:jar:1.0:compile
+[INFO] +- org.apache.cxf:cxf-rt-ws-addr:jar:3.1.5-SNAPSHOT:compile
+[INFO] +- org.apache.cxf:cxf-rt-ws-policy:jar:3.1.5-SNAPSHOT:compile
+[INFO] |  +- wsdl4j:wsdl4j:jar:1.6.3:compile
+[INFO] |  \- org.apache.neethi:neethi:jar:3.0.3:compile
+[INFO] +- org.apache.cxf:cxf-rt-ws-security:jar:3.1.5-SNAPSHOT:compile
+[INFO] |  +- org.apache.cxf:cxf-rt-security-saml:jar:3.1.5-SNAPSHOT:compile
+[INFO] |  |  \- org.apache.wss4j:wss4j-ws-security-common:jar:2.1.4:compile
+[INFO] |  |     +- org.apache.santuario:xmlsec:jar:2.0.5:compile
+[INFO] |  |     |  \- commons-codec:commons-codec:jar:1.10:compile
+[INFO] |  |     +- org.opensaml:opensaml-saml-impl:jar:3.1.1:compile
+[INFO] |  |     |  +- org.opensaml:opensaml-profile-api:jar:3.1.1:compile
+[INFO] |  |     |  |  \- org.opensaml:opensaml-core:jar:3.1.1:compile
+[INFO] |  |     |  +- org.opensaml:opensaml-saml-api:jar:3.1.1:compile
+[INFO] |  |     |  |  +- org.opensaml:opensaml-xmlsec-api:jar:3.1.1:compile
+[INFO] |  |     |  |  \- org.opensaml:opensaml-soap-api:jar:3.1.1:compile
+[INFO] |  |     |  +- org.opensaml:opensaml-security-impl:jar:3.1.1:compile
+[INFO] |  |     |  |  \- org.opensaml:opensaml-security-api:jar:3.1.1:compile
+[INFO] |  |     |  |     \- org.cryptacular:cryptacular:jar:1.0:compile
+[INFO] |  |     |  +- org.opensaml:opensaml-xmlsec-impl:jar:3.1.1:compile
+[INFO] |  |     |  \- net.shibboleth.utilities:java-support:jar:7.1.1:compile
+[INFO] |  |     |     +- com.google.guava:guava:jar:18.0:compile
+[INFO] |  |     |     \- joda-time:joda-time:jar:2.7:compile
+[INFO] |  |     +- org.opensaml:opensaml-xacml-impl:jar:3.1.1:compile
+[INFO] |  |     |  \- org.opensaml:opensaml-xacml-api:jar:3.1.1:compile
+[INFO] |  |     +- org.opensaml:opensaml-xacml-saml-impl:jar:3.1.1:compile
+[INFO] |  |     |  \- org.opensaml:opensaml-xacml-saml-api:jar:3.1.1:compile
+[INFO] |  |     +- org.jasypt:jasypt:jar:1.9.2:compile
+[INFO] |  |     \- org.apache.geronimo.specs:geronimo-javamail_1.4_spec:jar:1.7.1:compile
+[INFO] |  +- net.sf.ehcache:ehcache:jar:2.9.0:compile
+[INFO] |  +- org.apache.wss4j:wss4j-ws-security-dom:jar:2.1.4:compile
+[INFO] |  +- org.apache.wss4j:wss4j-policy:jar:2.1.4:compile
+[INFO] |  +- org.apache.wss4j:wss4j-ws-security-stax:jar:2.1.4:compile
+[INFO] |  |  \- org.apache.wss4j:wss4j-bindings:jar:2.1.4:compile
+[INFO] |  \- org.apache.wss4j:wss4j-ws-security-policy-stax:jar:2.1.4:compile
+[INFO] +- org.apache.cxf:cxf-testutils:jar:3.1.5-SNAPSHOT:test
+[INFO] +- org.springframework:spring-core:jar:4.1.7.RELEASE:compile
+[INFO] +- org.springframework:spring-beans:jar:4.1.7.RELEASE:test
+[INFO] +- org.springframework:spring-context:jar:4.1.7.RELEASE:test
+[INFO] |  +- org.springframework:spring-aop:jar:4.1.7.RELEASE:test
+[INFO] |  |  \- aopalliance:aopalliance:jar:1.0:test
+[INFO] |  \- org.springframework:spring-expression:jar:4.1.7.RELEASE:test
+[INFO] +- junit:junit:jar:4.12:test
+[INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO] +- org.bouncycastle:bcprov-jdk15on:jar:1.53:test
+[INFO] +- org.apache.cxf.services.xkms:cxf-services-xkms-client:jar:3.1.5-SNAPSHOT:compile
+[INFO] |  \- org.apache.cxf.services.xkms:cxf-services-xkms-common:jar:3.1.5-SNAPSHOT:compile
+[INFO] +- org.apache.cxf.services.xkms:cxf-services-xkms-service:jar:3.1.5-SNAPSHOT:compile
+[INFO] \- org.apache.cxf.services.xkms:cxf-services-xkms-x509-handlers:jar:3.1.5-SNAPSHOT:compile
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 1.970s
+[INFO] Finished at: Tue Dec 22 11:54:10 CST 2015
+[INFO] Final Memory: 22M/310M
+[INFO] ------------------------------------------------------------------------

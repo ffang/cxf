@@ -33,7 +33,8 @@
     <modules>
         <module>container-integration</module>
         <module>uncategorized</module>
-        <module>transports</module>
+        <!--module>transports</module-->
+        <module>transport-undertow</module>
         <module>transports-ssl3</module>
         <module>transport-jms</module>
         <module>jaxws</module>
@@ -44,10 +45,10 @@
         <module>ws-security</module>
         <module>ws-security-examples</module>
         <module>kerberos</module>
-        <module>rs-security</module>
+        <!--module>rs-security</module-->
         <module>wsdl_maven</module>
-        <module>cdi</module>
-        <module>rs-http-sci</module>
+        <!--module>cdi</module>
+        <module>rs-http-sci</module-->
         <module>tracing</module>
 	<module>jibx</module>
     </modules>

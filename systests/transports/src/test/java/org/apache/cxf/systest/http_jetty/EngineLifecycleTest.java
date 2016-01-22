@@ -152,7 +152,7 @@ public class EngineLifecycleTest extends Assert {
     }
     
     
-    @Test
+    //@Test
     public void testUpDownWithServlets() throws Exception {        
         setUpBus(true);
        
@@ -197,7 +197,7 @@ public class EngineLifecycleTest extends Assert {
      * 
      * @throws Exception
      */
-    @Test   
+    //@Test   
     public void testServerUpDownUp() throws Exception {
         
         setUpBus(true);
