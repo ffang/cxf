@@ -21,7 +21,7 @@
     <bean name="{http://cxf.apache.org/factory_pattern}NumberPort.http-destination" abstract="true">
         <!--  applying with wildcard to all JettyHTTPDestinations instead of this verbose method -->
     </bean>
-    <bean name="*" abstract="true" class="org.apache.cxf.transport.http_jetty.JettyHTTPDestination">
+    <bean name="*" abstract="true" class="org.apache.cxf.transport.http_undertow.UndertowHTTPDestination">
         <property name="multiplexWithAddress" value="true"/>
     </bean>
 </beans>
