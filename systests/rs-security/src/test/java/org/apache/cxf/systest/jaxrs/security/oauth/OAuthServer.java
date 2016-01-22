@@ -23,10 +23,10 @@ import java.net.URISyntaxException;
 
 import org.apache.cxf.testutil.common.AbstractBusTestServerBase;
 import org.apache.cxf.testutil.common.TestUtil;
-import org.eclipse.undertow.server.Handler;
-import org.eclipse.undertow.server.handler.DefaultHandler;
-import org.eclipse.undertow.server.handler.HandlerCollection;
-import org.eclipse.undertow.webapp.WebAppContext;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.handler.DefaultHandler;
+import org.eclipse.jetty.server.handler.HandlerCollection;
+import org.eclipse.jetty.webapp.WebAppContext;
 
 
 public class OAuthServer extends AbstractBusTestServerBase {
@@ -34,12 +34,12 @@ public class OAuthServer extends AbstractBusTestServerBase {
     public static final int PORT = Integer.valueOf(TestUtil.getPortNumber("oauth-test"));
     private static final String RESOURCE_PATH =
         "/org/apache/cxf/systest/jaxrs/oauth/server";
-    private org.eclipse.undertow.server.Server server;
+    private org.eclipse.jetty.server.Server server;
 
     
     protected void run() {
 
-        server = new org.eclipse.undertow.server.Server(PORT);
+        server = new org.eclipse.jetty.server.Server(PORT);
 
         WebAppContext webappcontext = new WebAppContext();
         String contextPath = null;
