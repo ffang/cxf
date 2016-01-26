@@ -103,7 +103,6 @@ public class UndertowHTTPHandler implements HttpHandler {
             if (ssl != null) {
                 request.setAttribute(SSL_CIPHER_SUITE_ATTRIBUTE, ssl.getCipherSuite());
                 try {
-                    // TODO?
                     request.setAttribute(SSL_PEER_CERT_CHAIN_ATTRIBUTE, ssl.getPeerCertificates());
                 } catch (Exception e) {
                     // for some case won't have the peer certification
@@ -111,12 +110,7 @@ public class UndertowHTTPHandler implements HttpHandler {
                 }
             }
             undertowHTTPDestination.doService(servletContext, request, response);
-            /*
-             * String target = undertowExchange.getRequestPath(); if (contextMatchExact) { if
-             * (target.equals(urlName)) { undertowHTTPDestination.doService(servletContext, request,
-             * response); } } else { if (target.equals(urlName) || HttpUrlUtil.checkContextPath(urlName,
-             * target)) { undertowHTTPDestination.doService(servletContext, request, response); } }
-             */
+            
         } catch (Throwable t) {
             t.printStackTrace();
             if (undertowExchange.isResponseChannelAvailable()) {

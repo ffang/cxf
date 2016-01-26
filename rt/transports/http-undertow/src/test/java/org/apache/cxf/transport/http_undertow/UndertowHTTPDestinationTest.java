@@ -631,8 +631,6 @@ public class UndertowHTTPDestinationTest extends Assert {
         response = EasyMock.createMock(HttpServletResponse.class);
         request.getMethod();
         EasyMock.expectLastCall().andReturn(method).atLeastOnce();
-        //request.getConnection();
-        //EasyMock.expectLastCall().andReturn(null).anyTimes();
         request.getUserPrincipal();
         EasyMock.expectLastCall().andReturn(null).anyTimes();
         
@@ -642,7 +640,6 @@ public class UndertowHTTPDestinationTest extends Assert {
             EasyMock.expectLastCall();
             response.flushBuffer();
             EasyMock.expectLastCall();
-            //request.setHandled(true);
             EasyMock.expectLastCall();
         } else { 
             //getQueryString for if statement
@@ -655,7 +652,7 @@ public class UndertowHTTPDestinationTest extends Assert {
                 EasyMock.expect(request.getAttribute(AbstractHTTPDestination.CXF_CONTINUATION_MESSAGE))
                     .andReturn(null);
                 
-                //EasyMock.expect(request.getMethod()).andReturn(method);            
+                       
                 EasyMock.expect(request.getInputStream()).andReturn(is);
                 EasyMock.expect(request.getContextPath()).andReturn("/bar");
                 EasyMock.expect(request.getServletPath()).andReturn("");
@@ -667,7 +664,6 @@ public class UndertowHTTPDestinationTest extends Assert {
                 EasyMock.expect(request.getQueryString()).andReturn(query);    
                 EasyMock.expect(request.getHeader("Accept")).andReturn("*/*");  
                 EasyMock.expect(request.getContentType()).andReturn("text/xml charset=utf8").times(2);
-                EasyMock.expect(request.getAttribute("org.eclipse.undertow.ajax.Continuation")).andReturn(null);
                 EasyMock.expect(request.getAttribute("http.service.redirection")).andReturn(null).anyTimes();
                 
                 HeaderMap httpFields = new HeaderMap();
@@ -687,7 +683,6 @@ public class UndertowHTTPDestinationTest extends Assert {
                                                     httpFields.get(UndertowHTTPDestinationTest.AUTH_HEADER)));
                  
                 EasyMock.expect(request.getInputStream()).andReturn(is);
-                //request.setHandled(true);
                 EasyMock.expectLastCall();  
                 response.flushBuffer();
                 EasyMock.expectLastCall();
@@ -769,7 +764,6 @@ public class UndertowHTTPDestinationTest extends Assert {
         EasyMock.expectLastCall();        
         response.getOutputStream();
         EasyMock.expectLastCall().andReturn(os).anyTimes();
-        //request.setHandled(true);
         EasyMock.expectLastCall();
         EasyMock.replay(bus);
     }
@@ -830,21 +824,7 @@ public class UndertowHTTPDestinationTest extends Assert {
             CastUtils.cast((Map<?, ?>)outMsg.get(Message.PROTOCOL_HEADERS));
         assertNotNull("expected response headers",
                       responseHeaders);
-        //REVISIT CHALLENGE_HEADER's mean
-        /*assertEquals("expected addField",
-                     3,
-                     response.getAddFieldCallCount());
-        Enumeration e = response.getFieldValues(CHALLENGE_HEADER);
-        List<String> challenges = new ArrayList<String>();
-        while (e.hasMoreElements()) {
-            challenges.add((String)e.nextElement());
-        }
-        assertTrue("expected challenge",
-                   challenges.contains(BASIC_CHALLENGE));
-        assertTrue("expected challenge",
-                   challenges.contains(DIGEST_CHALLENGE));
-        assertTrue("expected challenge",
-                   challenges.contains(CUSTOM_CHALLENGE));*/
+        
     }
     
     private void verifyBackChannelSend(Conduit backChannel,
@@ -877,11 +857,7 @@ public class UndertowHTTPDestinationTest extends Assert {
         assertEquals("unexpected status",
                      status,
                      response.getStatus());
-        /*if (status == 500) {
-            assertEquals("unexpected status message",
-                         "Internal Server Error",
-                         response.getReason());
-        }*/
+        
         verifyResponseHeaders(outMsg);     
         
         if (oneway) {

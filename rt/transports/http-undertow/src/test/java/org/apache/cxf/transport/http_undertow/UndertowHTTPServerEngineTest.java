@@ -47,6 +47,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class UndertowHTTPServerEngineTest extends Assert {
     private static final int PORT1 
         = Integer.valueOf(TestUtil.getPortNumber(UndertowHTTPServerEngineTest.class, 1));
@@ -83,62 +84,7 @@ public class UndertowHTTPServerEngineTest extends Assert {
 
     }
     
-    /**
-     * Check that names of threads serving requests for instances of UndertowHTTPServerEngine 
-     * can be set with user specified name.
-     */
-    /*@Test
-    public void testSettingThreadNames() throws Exception {
-        // User specific thread name prefix 1
-        String threadNamePrefix1 = "TestPrefix";
-        UndertowHTTPServerEngine engine = factory.createUndertowHTTPServerEngine(PORT1, "http");
-        ThreadingParameters parameters = new ThreadingParameters();
-        parameters.setThreadNamePrefix(threadNamePrefix1);
-        engine.setThreadingParameters(parameters);
-        engine.finalizeConfig();
-        UndertowHTTPTestHandler handler = new UndertowHTTPTestHandler("string1", true);
-        engine.addServant(new URL("https://localhost:" + PORT1 + "/test"), handler);
-        assertTrue("No threads whose name is started with " + threadNamePrefix1, 
-                checkForExistenceOfThreads(threadNamePrefix1));
-        
-        // Default thread name prefix
-        engine = factory.createUndertowHTTPServerEngine(PORT3, "http");
-        engine.finalizeConfig();
-        handler = new UndertowHTTPTestHandler("string3", true);
-        engine.addServant(new URL("https://localhost:" + PORT3 + "/test"), handler);
-        ThreadPool threadPool = engine.getServer().getThreadPool();
-        QueuedThreadPool qtp = (QueuedThreadPool)threadPool;
-        String prefixDefault = qtp.getName();
-        assertTrue("No threads whose name is started with " + prefixDefault, 
-                checkForExistenceOfThreads(prefixDefault));
-        
-        // User specific thread name prefix 2
-        String threadNamePrefix2 = "AnotherPrefix";
-        engine = factory.createUndertowHTTPServerEngine(PORT2, "http");
-        parameters = new ThreadingParameters();
-        parameters.setThreadNamePrefix(threadNamePrefix2);
-        engine.setThreadingParameters(parameters);
-        engine.finalizeConfig();
-        handler = new UndertowHTTPTestHandler("string2", true);
-        engine.addServant(new URL("https://localhost:" + PORT2 + "/test"), handler);
-        assertTrue("No threads whose name is started with " + threadNamePrefix2, 
-                checkForExistenceOfThreads(threadNamePrefix2));
-        
-        UndertowHTTPServerEngineFactory.destroyForPort(PORT1);
-        UndertowHTTPServerEngineFactory.destroyForPort(PORT2);
-        UndertowHTTPServerEngineFactory.destroyForPort(PORT3);
-    }*/
-
-    /*private boolean checkForExistenceOfThreads(String prefixName) {
-        Map<Thread, StackTraceElement[]> threads = Thread.getAllStackTraces();
-        Set<Thread> threadSet = threads.keySet();
-        for (Thread thread : threadSet) {
-            if (thread.getName().startsWith(prefixName)) {
-                return true;
-            } 
-        }
-        return false;
-    }*/
+    
     
     @Test
     public void testEngineRetrieval() throws Exception {
@@ -300,100 +246,8 @@ public class UndertowHTTPServerEngineTest extends Assert {
         UndertowHTTPServerEngineFactory.destroyForPort(PORT2);
     }
 
-    /*@Test
-    public void testSetHandlers() throws Exception {
-        URL url = new URL("http://localhost:" + PORT2 + "/hello/test");
-        UndertowHTTPTestHandler handler1 = new UndertowHTTPTestHandler("string1", true);
-        UndertowHTTPTestHandler handler2 = new UndertowHTTPTestHandler("string2", true);
-
-        UndertowHTTPServerEngine engine = new UndertowHTTPServerEngine();
-        engine.setPort(PORT2);
-
-        List<Handler> handlers = new ArrayList<Handler>();
-        handlers.add(handler1);
-        engine.setHandlers(handlers);
-        engine.finalizeConfig();
-
-        engine.addServant(url, handler2);
-        String response = null;
-        try {
-            response = getResponse(url.toString());
-            assertEquals("the undertow http handler1 did not take effect", response, "string1string2");
-        } catch (Exception ex) {
-            fail("Can't get the reponse from the server " + ex);
-        }
-        engine.stop();
-        UndertowHTTPServerEngineFactory.destroyForPort(PORT2);
-    }
-
-    @Test
-    public void testGetContextHandler() throws Exception {
-        String urlStr = "http://localhost:" + PORT1 + "/hello/test";
-        UndertowHTTPServerEngine engine =
-            factory.createUndertowHTTPServerEngine(PORT1, "http");
-        ContextHandler contextHandler = engine.getContextHandler(new URL(urlStr));
-        // can't find the context handler here
-        assertNull(contextHandler);
-        UndertowHTTPTestHandler handler1 = new UndertowHTTPTestHandler("string1", true);
-        UndertowHTTPTestHandler handler2 = new UndertowHTTPTestHandler("string2", true);
-        engine.addServant(new URL(urlStr), handler1);
-
-        // Note: There appears to be an internal issue in Undertow that does not
-        // unregister the MBean for handler1 during this setHandler operation.
-        // This scenario may create a warning message in the logs 
-        //     (javax.management.InstanceAlreadyExistsException: org.apache.cxf.
-        //         transport.http_undertow:type=undertowhttptesthandler,id=0)
-        // when running subsequent tests.
-        contextHandler = engine.getContextHandler(new URL(urlStr));
-        contextHandler.stop();
-        contextHandler.setHandler(handler2);
-        contextHandler.start();
-
-        String response = null;
-        try {
-            response = getResponse(urlStr);
-        } catch (Exception ex) {
-            fail("Can't get the reponse from the server " + ex);
-        }
-        assertEquals("the undertow http handler did not take effect", response, "string2");
-        UndertowHTTPServerEngineFactory.destroyForPort(PORT1);
-    }
-
-    @Test
-    public void testUndertowHTTPHandler() throws Exception {
-        String urlStr1 = "http://localhost:" + PORT3 + "/hello/test1";
-        String urlStr2 = "http://localhost:" + PORT3 + "/hello/test2";
-        UndertowHTTPServerEngine engine =
-            factory.createUndertowHTTPServerEngine(PORT3, "http");
-        ContextHandler contextHandler = engine.getContextHandler(new URL(urlStr1));
-        // can't find the context handler here
-        assertNull(contextHandler);
-        UndertowHTTPHandler handler1 = new UndertowHTTPTestHandler("test", false);
-        UndertowHTTPHandler handler2 = new UndertowHTTPTestHandler("test2", false);
-        engine.addServant(new URL(urlStr1), handler1);
-        
-        contextHandler = engine.getContextHandler(new URL(urlStr1));
-        
-        engine.addServant(new URL(urlStr2), handler2);
-        contextHandler = engine.getContextHandler(new URL(urlStr2));
-        
-        String response = null;
-        try {
-            response = getResponse(urlStr1 + "/test");
-        } catch (Exception ex) {
-            fail("Can't get the reponse from the server " + ex);
-        }
-        assertEquals("the undertow http handler did not take effect", response, "test");
-
-        try {
-            response = getResponse(urlStr2 + "/test");
-        } catch (Exception ex) {
-            fail("Can't get the reponse from the server " + ex);
-        }
-        assertEquals("the undertow http handler did not take effect", response, "test2");
-
-        UndertowHTTPServerEngineFactory.destroyForPort(PORT3);
-    }*/
+     
+    
 
     private String getResponse(String target) throws Exception {
         URL url = new URL(target);
@@ -407,4 +261,6 @@ public class UndertowHTTPServerEngineTest extends Assert {
         IOUtils.copy(in, buffer);
         return buffer.toString();
     }
+    
+    
 }

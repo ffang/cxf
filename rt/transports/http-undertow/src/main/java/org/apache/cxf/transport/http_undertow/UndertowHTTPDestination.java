@@ -109,17 +109,6 @@ public class UndertowHTTPDestination extends ServletDestination {
                 createUndertowHTTPServerEngine(nurl.getHost(), nurl.getPort(), nurl.getProtocol());
         }
 
-        /*
-         * TO-DO how the SSL is done in undertow 
-        assert engine != null;
-        TLSServerParameters serverParameters = engine.getTlsServerParameters();
-        if (serverParameters != null && serverParameters.getCertConstraints() != null) {
-            CertificateConstraintsType constraints = serverParameters.getCertConstraints();
-            if (constraints != null) {
-                certConstraints = CertConstraintsJaxBUtils.createCertConstraints(constraints);
-            }
-        }*/
-        
         // When configuring for "http", however, it is still possible that
         // Spring configuration has configured the port for https. 
         if (!nurl.getProtocol().equals(engine.getProtocol())) {
@@ -205,7 +194,6 @@ public class UndertowHTTPDestination extends ServletDestination {
             return;
         }
 
-        // REVISIT: service on executor if associated with endpoint
         ClassLoaderHolder origLoader = null;
         Bus origBus = BusFactory.getAndSetThreadDefaultBus(bus);
         try {
@@ -239,14 +227,7 @@ public class UndertowHTTPDestination extends ServletDestination {
         return (Message)req.getAttribute(CXF_CONTINUATION_MESSAGE);
     }
     
-    /*protected void setupContinuation(Message inMessage, final HttpServletRequest req,
-                                     final HttpServletResponse resp) {
-        if (engine != null && engine.getContinuationsEnabled()) {
-            inMessage.put(ContinuationProvider.class.getName(),
-                          new UndertowContinuationProvider(req, resp, inMessage));
-        }
-    }*/
-    
+        
     protected OutputStream flushHeaders(Message outMessage, boolean getStream) throws IOException {
         return super.flushHeaders(outMessage, getStream);
     }

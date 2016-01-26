@@ -70,7 +70,7 @@ public class UndertowServerEngineFactoryParser extends AbstractBPBeanDefinitionP
         }
         ef.setRuntimeClass(UndertowHTTPServerEngineFactoryHolder.class);
 
-        // setup the ConnectorMap and HandlersMap property for the UndertowHTTPServerEngineFactoryHolder
+        // setup the HandlersMap property for the UndertowHTTPServerEngineFactoryHolder
         
         try {
             // Print the DOM node
@@ -83,7 +83,6 @@ public class UndertowServerEngineFactoryParser extends AbstractBPBeanDefinitionP
             // setup the EngineConnector
             List<Element> engines = DOMUtils
                 .getChildrenWithName(element, HTTPUndertowTransportNamespaceHandler.UNDERTOW_TRANSPORT, "engine");
-            ef.addProperty("connectorMap", parseEngineConnector(engines, ef, context));
             ef.addProperty("handlersMap", parseEngineHandlers(engines, ef, context));
             return ef;
         } catch (Exception e) {
@@ -91,25 +90,7 @@ public class UndertowServerEngineFactoryParser extends AbstractBPBeanDefinitionP
         }
     }
     
-    protected Metadata parseEngineConnector(List<Element> engines, ComponentMetadata enclosingComponent,
-                                            ParserContext context) {
-        List<MapEntry> entries = new ArrayList<MapEntry>();
-        for (Element engine : engines) {
-            String port = engine.getAttribute("port");
-            ValueMetadata keyValue = createValue(context, port);
-            Element connector = DOMUtils
-                .getFirstChildWithName(engine, HTTPUndertowTransportNamespaceHandler.UNDERTOW_TRANSPORT,
-                                       "connector");
-            if (connector != null) {
-                Element first = DOMUtils.getFirstElement(connector);
-                Metadata valValue = context.parseElement(Metadata.class, enclosingComponent, first);
-                entries.add(new MapEntryImpl(keyValue, valValue));
-            }
-        }
-
-        return new MapMetadataImpl("java.lang.String", "org.eclipse.undertow.server.Connector", entries);
-    }
-    
+       
     protected Metadata parseEngineHandlers(List<Element> engines, ComponentMetadata enclosingComponent, 
                                            ParserContext context) {
         List<MapEntry> entries = new ArrayList<MapEntry>();
