@@ -215,10 +215,6 @@ public class UndertowHTTPServerEngineFactory {
         if (null == ref) {
             getOrCreate(this, host, port, tlsParams);
         } else {
-            /* TODO set TLS for the undertow
-            if (ref.getConnector() != null && ref.getConnector().isRunning()) {
-                throw new IOException("can't set the TLS params on the opened connector");
-            }*/
             ref.setTlsServerParameters(tlsParams);            
         }
     }
@@ -303,7 +299,6 @@ public class UndertowHTTPServerEngineFactory {
             try {
                 ref.stop();
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }            
         }
@@ -316,7 +311,6 @@ public class UndertowHTTPServerEngineFactory {
         return null;
     }
     
-    //TODO JMX support with undertow?
     
     public void initComplete() {
         // do nothing here

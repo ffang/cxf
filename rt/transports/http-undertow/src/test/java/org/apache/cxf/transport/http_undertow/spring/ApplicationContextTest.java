@@ -82,7 +82,7 @@ public class ApplicationContextTest extends Assert {
         TestApplicationContext ctx = new TestApplicationContext(
             new String[] {S1, s4});
         
-        //ctx.refresh();
+
         checkContext(ctx);
         ctx.close();
         ctx.destroy();
@@ -136,7 +136,6 @@ public class ApplicationContextTest extends Assert {
         assertEquals(99, engine.getThreadingParameters().getMinThreads());
         assertEquals(777, engine.getThreadingParameters().getMaxThreads());
                 
-        //assertTrue("The engine should support session manager", engine.isSessionSupport());
         assertNotNull("The handlers should not be null", engine.getHandlers());
         assertEquals(1, engine.getHandlers().size());
         

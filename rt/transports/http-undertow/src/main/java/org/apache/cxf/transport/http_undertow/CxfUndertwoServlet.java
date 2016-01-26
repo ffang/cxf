@@ -35,13 +35,11 @@ public class CxfUndertwoServlet extends AbstractHTTPServlet {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
         throws IOException, ServletException {
-        // TODO Auto-generated method stub
-        
+  
     }
 
     @Override
     protected Bus getBus() {
-        // TODO Auto-generated method stub
         return null;
     }
 

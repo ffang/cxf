@@ -146,7 +146,6 @@ public class UndertowHTTPServerEngine implements ServerEngine {
                 servletContext = buildServletContext(contextName);
                 handler.setServletContext(servletContext);
                 server = createServer(url, handler);
-                setupThreadPool();
                 server.start();
             } catch (Exception e) {
                 LOG.log(Level.SEVERE, "START_UP_SERVER_FAILED_MSG", new Object[] {e.getMessage(), port});
@@ -165,42 +164,16 @@ public class UndertowHTTPServerEngine implements ServerEngine {
             try {
                 servletContext = buildServletContext(contextName);
             } catch (ServletException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                throw new Fault(new Message("START_UP_SERVER_FAILED_MSG", LOG, e.getMessage(), port), e);
             }
             handler.setServletContext(servletContext);
-            /*String urlPath = url.getPath();
-            if (urlPath.endsWith("/")) {
-                urlPath = urlPath.substring(0, urlPath.length() - 1);
-            }*/
+            
             if (handler.isContextMatchExact()) {
                 path.addExactPath(url.getPath(), handler);
             } else {
                 path.addPrefixPath(url.getPath(), handler);
             }
-            //stop server and rebuild server
-                       
-            /*try {
-                try {
-                    server.stop();
-                } catch (Exception ex) {
-                    //ignore - probably wasn't fully started anyway
-                }
-                handler.setServletContext(servletContext);
-                server = createServer(url, handler);
-                setupThreadPool();
-                server.start();
-            } catch (Exception e) {
-                LOG.log(Level.SEVERE, "START_UP_SERVER_FAILED_MSG", new Object[] {e.getMessage(), port});
-                //problem starting server
-                try {                    
-                    server.stop();
-                } catch (Exception ex) {
-                    //ignore - probably wasn't fully started anyway
-                }
-                server = null;
-                throw new Fault(new Message("START_UP_SERVER_FAILED_MSG", LOG, e.getMessage(), port), e);
-            }*/
+            
         }
         
         final String smap = HttpUriMapper.getResourceBase(url.getPath());
@@ -209,114 +182,16 @@ public class UndertowHTTPServerEngine implements ServerEngine {
         servantCount = servantCount + 1;
     }
     
-    /*class StopUndertowThread implements Runnable {
-        
-        private URL url; 
-        private UndertowHTTPHandler handler;
-        private Thread parentThread;
-        
-        public StopUndertowThread(URL url, UndertowHTTPHandler handler, Thread parentThread) {
-            this.url = url;
-            this.handler = handler;
-            this.parentThread = parentThread;
-        }
-
-        @Override
-        public void run() {
-            try {
-                Thread.sleep(100);
-                
-                try {
-                    server.stop();
-                } catch (Exception ex) {
-                    //ignore - probably wasn't fully started anyway
-                }
-                handler.setServletContext(servletContext);
-                server = createServer(url, handler);
-                setupThreadPool();
-                server.start();
-            } catch (Exception e) {
-                LOG.log(Level.SEVERE, "START_UP_SERVER_FAILED_MSG", new Object[] {e.getMessage(), port});
-                //problem starting server
-                try {                    
-                    server.stop();
-                } catch (Exception ex) {
-                    //ignore - probably wasn't fully started anyway
-                }
-                server = null;
-                throw new Fault(new Message("START_UP_SERVER_FAILED_MSG", LOG, e.getMessage(), port), e);
-            }
-            
-            final String smap = HttpUriMapper.getResourceBase(url.getPath());
-            handler.setName(smap);
-            registedPaths.put(url.getPath(), handler);
-            servantCount = servantCount + 1;
-            
-        }
-        
-    }*/
-    
-    /*private Undertow rebuildServer(URL url, UndertowHTTPHandler handler) throws Exception {
-        Undertow.Builder result = Undertow.builder();
-        //result.setServerOption(UndertowOptions.IDLE_TIMEOUT, 60000);
-        if (tlsServerParameters != null) { 
-            SSLContext sslContext = createSSLContext();
-            result = result.addHttpsListener(getPort(), getHost(), sslContext);
-        } else {
-            result = result.addHttpListener(getPort(), getHost());
-        }
-        PathHandler path = Handlers.path(new NotFoundHandler());
-        for (String context : this.registedPaths.keySet()) {
-            path.addExactPath(context, this.registedPaths.get(context));
-        }
-        path.addExactPath(url.getPath(), handler);
-        //TODO merge this method as createServer?
-        result = result.setHandler(path);
-        result = decorateUndertowSocketConnection(result);
-        result = disableSSLv3(result);
-        return result.build();
-    }*/
-
-    private void setupThreadPool() {
-        // TODO Auto-generated method stub
-        
-    }
-
-    /*private ServletContext buildServletContext(String contextName) {
-        ServletContainer servletContainer = new ServletContainerImpl();
-        DeploymentInfo deploymentInfo = new DeploymentInfo();
-        //TODO different classloader?
-        deploymentInfo.setClassLoader(Thread.currentThread().getContextClassLoader());
-        deploymentInfo.setDeploymentName("cxf-undertow");
-        deploymentInfo.setContextPath(contextName);
-        DeploymentManager deploymentManager = new DeploymentManagerImpl(deploymentInfo, servletContainer);
-        deploymentManager.deploy();
-        return deploymentManager.getDeployment().getServletContext();
-       
-    }*/
     
     private ServletContext buildServletContext(String contextName) 
         throws ServletException {
-        //TODO should only create one ServletContainerImpl
         ServletContainer servletContainer = new ServletContainerImpl();
         DeploymentInfo deploymentInfo = new DeploymentInfo();
-        //TODO different classloader?
         deploymentInfo.setClassLoader(Thread.currentThread().getContextClassLoader());
         deploymentInfo.setDeploymentName("cxf-undertow");
         deploymentInfo.setContextPath(contextName);
         ServletInfo asyncServlet = new ServletInfo(ServletPathMatches.DEFAULT_SERVLET_NAME, CxfUndertwoServlet.class);
         deploymentInfo.addServlet(asyncServlet);
-        /*deploymentInfo.addInitialHandlerChainWrapper(new HandlerWrapper() {
-            @Override
-            public HttpHandler wrap(final HttpHandler handler) {
-                return new HttpHandler() {
-                    @Override
-                    public void handleRequest(final HttpServerExchange exchange) throws Exception {
-                        handler.handleRequest(exchange);
-                    }
-                };
-            }
-        });*/
         servletContainer.addDeployment(deploymentInfo);
         DeploymentManager deploymentManager = servletContainer.getDeployment(deploymentInfo.getDeploymentName());
         deploymentManager.deploy();
@@ -335,24 +210,11 @@ public class UndertowHTTPServerEngine implements ServerEngine {
         } else {
             result = result.addHttpListener(getPort(), getHost());
         }
-        //PathHandler path = Handlers.path(new NotFoundHandler());
         path = Handlers.path(new NotFoundHandler());
-        /*for (String context : this.registedPaths.keySet()) {
-            path.addExactPath(context, this.registedPaths.get(context));
-        }*/
+        
         if (url.getPath().length() == 0) {
             result = result.setHandler(Handlers.trace(undertowHTTPHandler));
         } else {
-            /*if ("/".equals(url.getPath())) {
-                path.addPrefixPath(url.getPath(), undertowHTTPHandler);
-            } else {
-                path.addExactPath(url.getPath(), undertowHTTPHandler);
-            }
-            path.addPrefixPath(url.getPath(), undertowHTTPHandler);*/
-            /*String urlPath = url.getPath();
-            if (urlPath.endsWith("/")) {
-                urlPath = urlPath.substring(0, urlPath.length() - 1);
-            }*/
             if (undertowHTTPHandler.isContextMatchExact()) {
                 path.addExactPath(url.getPath(), undertowHTTPHandler);
             } else {
@@ -361,8 +223,7 @@ public class UndertowHTTPServerEngine implements ServerEngine {
             
             result = result.setHandler(wrapHandler(path));
         }
-        //path.addPrefixPath(url.getPath(), undertowHTTPHandler);
-        //TODO: do we need the addPrefixPath?
+        
         result = decorateUndertowSocketConnection(result);
         result = disableSSLv3(result);
         result = configureThreads(result);
@@ -474,46 +335,11 @@ public class UndertowHTTPServerEngine implements ServerEngine {
         } else {
             path.removePrefixPath(url.getPath());
         }
-        /*try {
-            this.server.stop();
-        } catch (Exception ex) {
-            //ignore - probably wasn't fully started anyway
-        }
-        registedPaths.remove(url.getPath());
-        --servantCount;
-        if (servantCount == 0) {
-            return;
-        }
-        Undertow.Builder result = Undertow.builder();
-        if (tlsServerParameters != null) { 
-            try {
-                if (this.sslContext == null) {
-                    this.sslContext = createSSLContext();
-                }
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            result = result.addHttpsListener(getPort(), getHost(), this.sslContext);
-        } else {
-            result = result.addHttpListener(getPort(), getHost());
-        }
-        //should manipulate the path handler only to remove the prefix path/exact path
-        PathHandler pathNew = Handlers.path(new NotFoundHandler());
-        for (String context : this.registedPaths.keySet()) {
-            pathNew.addExactPath(context, this.registedPaths.get(context));
-        }
-        result = result.setHandler(pathNew);
-        result = decorateUndertowSocketConnection(result);
-        result = disableSSLv3(result);
-        server = result.build();
-        server.start();
-        */
     }
 
     @Override
     public UndertowHTTPHandler getServant(URL url) {
-        return null;
+        return registedPaths.get(url.getPath());
     }
 
     /**
@@ -630,15 +456,7 @@ public class UndertowHTTPServerEngine implements ServerEngine {
         return !Boolean.valueOf(s);
     }
     
-    /*private boolean isSsl() {
-        if (server == null) {
-            return false;
-        } else {
-            return true;
-            //TODO get listener from Undertow server
-        }
-    }*/
-    
+        
     protected SSLContext createSSLContext() throws Exception  {
         String proto = tlsServerParameters.getSecureSocketProtocol() == null
             ? "TLS" : tlsServerParameters.getSecureSocketProtocol();

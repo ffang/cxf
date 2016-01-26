@@ -41,6 +41,7 @@ import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.configuration.jsse.TLSServerParameters;
 import org.apache.cxf.configuration.jsse.TLSServerParametersConfig;
 import org.apache.cxf.staxutils.StaxUtils;
+import org.apache.cxf.transport.http_undertow.CXFUndertowHttpHandler;
 import org.apache.cxf.transport.http_undertow.ThreadingParameters;
 import org.apache.cxf.transport.http_undertow.UndertowHTTPServerEngine;
 import org.apache.cxf.transport.http_undertow.UndertowHTTPServerEngineFactory;
@@ -50,12 +51,15 @@ import org.apache.cxf.transports.http_undertow.configuration.ThreadingParameters
 import org.apache.cxf.transports.http_undertow.configuration.UndertowHTTPServerEngineConfigType;
 import org.apache.cxf.transports.http_undertow.configuration.UndertowHTTPServerEngineFactoryConfigType;
 
+
 public class UndertowHTTPServerEngineFactoryHolder {
 
     private static final Logger LOG = LogUtils.getL7dLogger(UndertowHTTPServerEngineFactoryHolder.class);
 
     private String parsedElement;
     private UndertowHTTPServerEngineFactory factory;
+    
+    private Map<String, List<CXFUndertowHttpHandler>> handlersMap;
     
     
     private JAXBContext jaxbContext;
@@ -109,18 +113,9 @@ public class UndertowHTTPServerEngineFactoryHolder {
             List<UndertowHTTPServerEngine> engineList = new ArrayList<UndertowHTTPServerEngine>();
             for (UndertowHTTPServerEngineConfigType engine : config.getEngine()) {
                 UndertowHTTPServerEngine eng = new UndertowHTTPServerEngine();
-                /*if (engine.getConnector() != null && connectorMap != null) {
-                    // we need to setup the Connector from the connectorMap
-                    Connector connector = connectorMap.get(engine.getPort().toString());
-                    if (connector != null) {
-                        eng.setConnector(connector);
-                    } else {
-                        throw new RuntimeException("Could not find the connector instance for engine with port"
-                            + engine.getPort().toString());
-                    }
-                }
+                
                 if (engine.getHandlers() != null && handlersMap != null) {
-                    List<Handler> handlers = handlersMap.get(engine.getPort().toString());
+                    List<CXFUndertowHttpHandler> handlers = handlersMap.get(engine.getPort().toString());
                     if (handlers != null) {
                         eng.setHandlers(handlers);
                     } else {
@@ -131,23 +126,21 @@ public class UndertowHTTPServerEngineFactoryHolder {
                 
                 if (engine.isContinuationsEnabled() != null) {
                     eng.setContinuationsEnabled(engine.isContinuationsEnabled());
-                }*/
+                }
  
                 if (engine.getHost() != null && !StringUtils.isEmpty(engine.getHost())) {
                     eng.setHost(engine.getHost());
                 }
-                /*if (engine.getMaxIdleTime() != null) {
+                if (engine.getMaxIdleTime() != null) {
                     eng.setMaxIdleTime(engine.getMaxIdleTime());
-                }*/
+                }
                 if (engine.getPort() != null) {
                     eng.setPort(engine.getPort());
                 }
-                /*if (engine.isReuseAddress() != null) {
-                    eng.setReuseAddress(engine.isReuseAddress());
-                }
+                
                 if (engine.isSessionSupport() != null) {
                     eng.setSessionSupport(engine.isSessionSupport());
-                }*/
+                }
                 if (engine.getThreadingParameters() != null) {
                     ThreadingParametersType threads = engine.getThreadingParameters();
                     ThreadingParameters rThreads = new ThreadingParameters();
@@ -157,7 +150,7 @@ public class UndertowHTTPServerEngineFactoryHolder {
                     eng.setThreadingParameters(rThreads);
                 }
 
-                //eng.setServer(engine.getTlsServerParameters());
+                
                 if (engine.getTlsServerParameters() != null) {
                     TLSServerParameters parameter = null;
                     try {
