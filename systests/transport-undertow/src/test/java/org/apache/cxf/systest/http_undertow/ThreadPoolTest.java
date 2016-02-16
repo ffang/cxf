@@ -105,8 +105,7 @@ public class ThreadPoolTest extends AbstractClientServerTestBase {
                 countLess++;
             }
         }
-        System.out.println("the countLess is ===>" + countLess);
-        System.out.println("the countMore is ===>" + countMore);
+
         assertTrue(countLess >= 2 && countLess <= 3);
         assertTrue(countMore >= 2 && countMore <= 3);
     }
