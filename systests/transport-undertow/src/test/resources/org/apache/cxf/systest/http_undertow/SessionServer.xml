@@ -21,8 +21,6 @@
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"/>
     <httpj:engine-factory bus="cxf">
         <httpj:engine port="${testutil.ports.SessionServer}">
-            <httpj:sessionSupport>true</httpj:sessionSupport>
-            <!--httpj:reuseAddress>false</httpj:reuseAddress-->
         </httpj:engine>
     </httpj:engine-factory>
     <jaxws:endpoint address="http://localhost:${testutil.ports.SessionServer}/SoapContext/GreeterPort" implementor="org.apache.cxf.systest.http_undertow.GreeterSessionImpl">

@@ -116,10 +116,6 @@ public class UndertowHTTPServerEngine implements ServerEngine {
     
     private int maxIdleTime = 200000;
     
-    private Boolean sendServerVersion = true;
-
-    private Boolean isSessionSupport = false;
-
     private org.apache.cxf.transport.http_undertow.ThreadingParameters threadingParameters;
     
     private List<CXFUndertowHttpHandler> handlers;
@@ -530,22 +526,7 @@ public class UndertowHTTPServerEngine implements ServerEngine {
         this.maxIdleTime = maxIdleTime;
     }
     
-    public void setSendServerVersion(Boolean sendServerVersion) {
-        this.sendServerVersion = sendServerVersion;
-    }
-
-    public Boolean getSendServerVersion() {
-        return sendServerVersion;
-    }
-    
-    public void setSessionSupport(boolean support) {
-        isSessionSupport = support;
-    }
-    
-    public boolean isSessionSupport() {
-        return isSessionSupport;
-    }
-    
+        
     /**
      * set the Undertow server's handlers
      * @param h

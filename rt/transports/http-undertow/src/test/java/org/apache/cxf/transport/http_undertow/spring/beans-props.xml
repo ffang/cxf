@@ -55,12 +55,11 @@
         <hj:engine port="#[engine.port.zero]">
             <hj:threadingParameters minThreads="${engine.port.zero.minThreads}" maxThreads="${engine.port.zero.maxThreads}"/>
         </hj:engine>
-        <hj:engine port="$(engine.port.nine.one)" maxIdleTime="$(engine.port.nine.one.maxIdle)" sendServerVersion="$(engine.port.nine.one.sendServerVersion)">
+        <hj:engine port="$(engine.port.nine.one)" maxIdleTime="$(engine.port.nine.one.maxIdle)">
             <hj:threadingParameters minThreads="${engine.port.nine.one.minThreads}" maxThreads="${engine.port.nine.one.maxThreads}" threadNamePrefix="${engine.port.nine.one.threadNamePrefix}"/>
             <hj:handlers>
                 <beans:bean class="org.apache.cxf.transport.http_undertow.spring.TestDummyHandler"/>
             </hj:handlers>
-            <hj:sessionSupport>true</hj:sessionSupport>
         </hj:engine>
         <hj:engine port="${engine.port.nine.two}">
             <hj:tlsServerParameters>
