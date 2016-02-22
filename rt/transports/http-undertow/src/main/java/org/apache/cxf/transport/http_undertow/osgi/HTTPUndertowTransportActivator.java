@@ -130,19 +130,15 @@ public class HTTPUndertowTransportActivator
         if (threading != null) {
             e.setThreadingParameters(threading);
         }
-        /*Enumeration<String> keys = properties.keys();
+        Enumeration<String> keys = properties.keys();
         while (keys.hasMoreElements()) {
             String k = keys.nextElement();
-            if ("sessionSupport".equals(k)) {
-                e.setSessionSupport(Boolean.parseBoolean(properties.get(k)));
-            } else if ("continuationsEnabled".equals(k)) {
+            if ("continuationsEnabled".equals(k)) {
                 e.setContinuationsEnabled(Boolean.parseBoolean(properties.get(k)));
-            } else if ("reuseAddress".equals(k)) {
-                e.setReuseAddress(Boolean.parseBoolean(properties.get(k)));
             } else if ("maxIdleTime".equals(k)) {
                 e.setMaxIdleTime(Integer.parseInt(properties.get(k)));
             } 
-        }*/
+        }
     }
 
     public void deleted(String pid) {

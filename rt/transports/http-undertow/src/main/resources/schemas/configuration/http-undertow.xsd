@@ -125,8 +125,6 @@
          </xs:choice>         
          <xs:element name="connector" type="xsd:anyType" minOccurs="0"/>
          <xs:element name="handlers" type="xsd:anyType" minOccurs="0"/>
-         <xs:element name="sessionSupport" type="ptp:ParameterizedBoolean" minOccurs="0"/>
-         <xs:element name="reuseAddress" type="ptp:ParameterizedBoolean" minOccurs="0" />          
        </xs:sequence>
        
        <xs:attribute name="port" type="ptp:ParameterizedInt" use="required">
@@ -152,15 +150,11 @@
                 by Undertow destinations. Continuations will be checked if this attribute is set to true or omitted, ignored otherwise.</xs:documentation>
              </xs:annotation>
        </xs:attribute>
+
        <xs:attribute name="maxIdleTime" type="ptp:ParameterizedInt">
            <xs:annotation>  
                 <xs:documentation>Specifies the maximum idle time for a undertow connection. The timer is reset whenever there are any read or write actions on the underlying stream.</xs:documentation> 
            </xs:annotation>
-       </xs:attribute>
-       <xs:attribute name="sendServerVersion" type="ptp:ParameterizedBoolean">
-           <xs:annotation>
-                <xs:documentation>Specifies if Undertow Server prevent the Server: http header being sent. Server: http header will be sent if this attribute is set to true or omitted, won't be sent otherwise.</xs:documentation>
-             </xs:annotation>
        </xs:attribute>
 
     </xs:complexType>

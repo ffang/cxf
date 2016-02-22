@@ -42,12 +42,11 @@
         <hj:engine port="0">
             <hj:threadingParameters minThreads="21" maxThreads="389"/>
         </hj:engine>
-        <hj:engine port="9001" maxIdleTime="40000" sendServerVersion="false">
+        <hj:engine port="9001" maxIdleTime="40000">
             <hj:threadingParameters minThreads="99" maxThreads="777" threadNamePrefix="AnotherPrefix"/>
             <hj:handlers>
                 <beans:bean class="org.apache.cxf.transport.http_undertow.spring.TestDummyHandler"/>
             </hj:handlers>
-            <hj:sessionSupport>true</hj:sessionSupport>
         </hj:engine>
         <hj:engine port="9002">
             <hj:tlsServerParameters>

@@ -227,6 +227,12 @@ public class UndertowHTTPDestination extends ServletDestination {
         return (Message)req.getAttribute(CXF_CONTINUATION_MESSAGE);
     }
     
+    protected void setupContinuation(Message inMessage, final HttpServletRequest req,
+                                     final HttpServletResponse resp) {
+        if (engine != null && engine.getContinuationsEnabled()) {
+            super.setupContinuation(inMessage, req, resp);
+        }
+    }
         
     protected OutputStream flushHeaders(Message outMessage, boolean getStream) throws IOException {
         return super.flushHeaders(outMessage, getStream);

@@ -127,7 +127,8 @@ public class UndertowHTTPServerEngineFactoryHolder {
                 if (engine.isContinuationsEnabled() != null) {
                     eng.setContinuationsEnabled(engine.isContinuationsEnabled());
                 }
- 
+
+                
                 if (engine.getHost() != null && !StringUtils.isEmpty(engine.getHost())) {
                     eng.setHost(engine.getHost());
                 }
@@ -138,9 +139,6 @@ public class UndertowHTTPServerEngineFactoryHolder {
                     eng.setPort(engine.getPort());
                 }
                 
-                if (engine.isSessionSupport() != null) {
-                    eng.setSessionSupport(engine.isSessionSupport());
-                }
                 if (engine.getThreadingParameters() != null) {
                     ThreadingParametersType threads = engine.getThreadingParameters();
                     ThreadingParameters rThreads = new ThreadingParameters();

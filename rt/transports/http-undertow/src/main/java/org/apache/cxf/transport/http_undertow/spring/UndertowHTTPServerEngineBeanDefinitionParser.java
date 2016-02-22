@@ -89,11 +89,7 @@ public class UndertowHTTPServerEngineBeanDefinitionParser extends AbstractBeanDe
             bean.addPropertyValue("maxIdleTime", maxIdleTimeStr);
         }
         
-        String sendServerVersionStr = element.getAttribute("sendServerVersion");
-        if (sendServerVersionStr != null && sendServerVersionStr.length() > 0) {
-            bean.addPropertyValue("sendServerVersion", sendServerVersionStr);
-        }
-        
+                
         ValueHolder busValue = ctx.getContainingBeanDefinition()
             .getConstructorArgumentValues().getArgumentValue(0, Bus.class);
         bean.addPropertyValue("bus", busValue.getValue());
@@ -134,11 +130,7 @@ public class UndertowHTTPServerEngineBeanDefinitionParser extends AbstractBeanDe
                     List<?> handlers = 
                         ctx.getDelegate().parseListElement(elem, bean.getBeanDefinition());
                     bean.addPropertyValue("handlers", handlers);
-                } else if ("sessionSupport".equals(name) || "reuseAddress".equals(name)) {
-                    String text = elem.getTextContent();                        
-                    bean.addPropertyValue(name, text);
-                }                         
-
+                }
                 elem = org.apache.cxf.helpers.DOMUtils.getNextElement(elem);          
             }
         } catch (Exception e) {
