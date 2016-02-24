@@ -87,6 +87,7 @@ public class UndertowHTTPServerEngineFactoryHolder {
                     String id = threads.getId();
                     rThreads.setMaxThreads(threads.getThreadingParameters().getMaxThreads());
                     rThreads.setMinThreads(threads.getThreadingParameters().getMinThreads());
+                    rThreads.setWorkerIOThreads(threads.getThreadingParameters().getWorkerIOThreads());
                     threadingParametersMap.put(id, rThreads);
                 }
 
