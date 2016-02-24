@@ -121,11 +121,6 @@ public class UndertowHTTPServerEngineBeanDefinitionParser extends AbstractBeanDe
                                                     UndertowHTTPServerEngineBeanDefinitionParser.class,
                                                     "createThreadingParametersRef"
                                                     );
-                } else if ("connector".equals(name)) { 
-                    // only deal with the one connector here
-                    List<?> list = 
-                        ctx.getDelegate().parseListElement(elem, bean.getBeanDefinition());
-                    bean.addPropertyValue("connector", list.get(0));
                 } else if ("handlers".equals(name)) {
                     List<?> handlers = 
                         ctx.getDelegate().parseListElement(elem, bean.getBeanDefinition());

@@ -67,7 +67,7 @@ public class UndertowHTTPServerEngineFactoryBeanDefinitionParser
 
     @Override
     public void doParse(Element element, ParserContext ctx, BeanDefinitionBuilder bean) {
-        //bean.setAbstract(true);        
+         
         String bus = element.getAttribute("bus");
         
         BeanDefinitionBuilder factbean 

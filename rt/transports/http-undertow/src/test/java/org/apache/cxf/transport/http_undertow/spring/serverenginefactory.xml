@@ -37,13 +37,9 @@
         <hj:threadingParametersRef id="sampleThreading1"/>
     </hj:engine>
     <hj:engine port="9002">
-        <hj:connector>
-            <bean class="undertowsocketconnector"/>
-        </hj:connector>
         <hj:handlers>
             <bean class="undertowhandler1"/>
             <bean class="undertowhandler2"/>
         </hj:handlers>
-        <hj:useSession> true </hj:useSession>
     </hj:engine>
 </hj:engine-factory>

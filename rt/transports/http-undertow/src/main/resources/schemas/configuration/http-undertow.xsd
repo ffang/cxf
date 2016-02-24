@@ -123,7 +123,6 @@
              </xs:annotation>
           </xs:element>
          </xs:choice>         
-         <xs:element name="connector" type="xsd:anyType" minOccurs="0"/>
          <xs:element name="handlers" type="xsd:anyType" minOccurs="0"/>
        </xs:sequence>
        
