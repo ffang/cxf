@@ -117,7 +117,7 @@ public class UndertowHTTPServerEngineTest extends Assert {
         factory.setEnginesList(list);
         engine = factory.createUndertowHTTPServerEngine(PORT2, "https");
         UndertowHTTPTestHandler handler1 = new UndertowHTTPTestHandler("string1", true);
-        // need to create a servant to create the connector
+        
         engine.addServant(new URL("https://localhost:" + PORT2 + "/test"), handler1);
         assertTrue("Protocol must be https",
                 "https".equals(engine.getProtocol()));

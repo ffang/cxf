@@ -469,7 +469,6 @@ public class UndertowHTTPServerEngine implements ServerEngine {
                      tlsServerParameters.getTrustManagers(),
                      tlsServerParameters.getSecureRandom());
 
-        //TODO Set the CipherSuites
         return context;
     }
     

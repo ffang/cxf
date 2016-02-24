@@ -145,7 +145,7 @@ public class UndertowHTTPServerEngineFactoryHolder {
                     ThreadingParameters rThreads = new ThreadingParameters();
                     rThreads.setMaxThreads(threads.getMaxThreads());
                     rThreads.setMinThreads(threads.getMinThreads());
-
+                    rThreads.setWorkerIOThreads(threads.getWorkerIOThreads());
                     eng.setThreadingParameters(rThreads);
                 }
 
