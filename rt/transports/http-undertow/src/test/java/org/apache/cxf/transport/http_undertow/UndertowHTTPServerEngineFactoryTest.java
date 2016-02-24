@@ -63,7 +63,7 @@ public class UndertowHTTPServerEngineFactoryTest
     
     /**
      * This test makes sure that a default Spring initialized bus will 
-     * have the UndertowHTTPServerEngineFactory (absent of <httpj:engine-factory>
+     * have the UndertowHTTPServerEngineFactory (absent of <httpu:engine-factory>
      * configuration.
      */
     @Test
@@ -89,7 +89,7 @@ public class UndertowHTTPServerEngineFactoryTest
     }
     
     /**
-     * This test makes sure that with a <httpj:engine-factory bus="cxf">
+     * This test makes sure that with a <httpu:engine-factory bus="cxf">
      * that the bus is configured with the rightly configured Undertow
      * HTTP Server Engine Factory.  Port 1234 should have be configured
      * for TLS.
