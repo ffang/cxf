@@ -44,17 +44,17 @@
     <xs:complexType name="ThreadingParametersType">
        <xs:attribute name="minThreads" type="ptp:ParameterizedUShort">
           <xs:annotation>
-             <xs:documentation>Specifies the minimum number of threads available to the Undertow instance for processing requests.</xs:documentation>
+             <xs:documentation>Specify the number of "core" threads for the worker task thread pool. Generally this should be reasonably high, at least 10 per CPU core.</xs:documentation>
           </xs:annotation>
        </xs:attribute>
        <xs:attribute name="maxThreads" type="ptp:ParameterizedUShort">
        <xs:annotation>
-             <xs:documentation>Specifies the maximum number of threads available to the Undertow instance for processing requests.</xs:documentation>
+             <xs:documentation>Specify the maximum number of threads for the worker task thread pool.</xs:documentation>
           </xs:annotation>
        </xs:attribute>
-       <xs:attribute name="threadNamePrefix" type="xs:string">
+       <xs:attribute name="workerIOThreads" type="ptp:ParameterizedUShort">
        <xs:annotation>
-             <xs:documentation>Specifies the thread name prefix for threads that are used by the Undertow instance for processing requests.</xs:documentation>
+             <xs:documentation>Specify the number of I/O threads to create for the worker.  If not specified, a default will be chosen. One IO thread per CPU core is a reasonable default.</xs:documentation>
           </xs:annotation>
        </xs:attribute>
     </xs:complexType>

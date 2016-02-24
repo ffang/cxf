@@ -159,6 +159,8 @@ public class HTTPUndertowTransportActivator
                     p.setMinThreads(Integer.parseInt(v));
                 } else if ("maxThreads".equals(k)) {
                     p.setMaxThreads(Integer.parseInt(v));
+                } else if ("workerIOThreads".equals(k)) {
+                    p.setWorkerIOThreads(Integer.parseInt(v));
                 }
             }
         }
