@@ -25,6 +25,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+//import java.util.Base64;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -35,10 +36,15 @@ import javax.activation.DataHandler;
 
 import org.apache.cxf.message.Attachment;
 import org.apache.cxf.message.Message;
+import sun.misc.BASE64Encoder;
+
+
 
 public class AttachmentSerializer {
     // http://tools.ietf.org/html/rfc2387
     private static final String DEFAULT_MULTIPART_TYPE = "multipart/related";
+    
+    private static String contentTransferEncoding = "binary";
     
     private Message message;
     private String bodyBoundary;
@@ -50,6 +56,7 @@ public class AttachmentSerializer {
     private boolean xop = true;
     private boolean writeOptionalTypeParameters = true;
     
+        
     public AttachmentSerializer(Message messageParam) {
         message = messageParam;
     }
@@ -176,6 +183,10 @@ public class AttachmentSerializer {
     private static String escapeQuotes(String s) {
         return s.indexOf('"') != 0 ? s.replace("\"", "\\\"") : s;    
     }
+    
+    public static void setContentTransferEncoding(String cte) {
+        contentTransferEncoding = cte;
+    }
 
     private String getHeaderValue(String name, String defaultValue) {
         List<String> value = rootHeaders.get(name);
@@ -196,7 +207,7 @@ public class AttachmentSerializer {
                                      Map<String, List<String>> headers, Writer writer) throws IOException {
         writer.write("\r\nContent-Type: ");
         writer.write(contentType);
-        writer.write("\r\nContent-Transfer-Encoding: binary\r\n");
+        writer.write("\r\nContent-Transfer-Encoding: " + contentTransferEncoding + "\r\n");
 
         if (attachmentId != null) {
             attachmentId = checkAngleBrackets(attachmentId);
@@ -263,7 +274,12 @@ public class AttachmentSerializer {
                 writeHeaders(handler.getContentType(), a.getId(),
                              headers, writer);
                 out.write(writer.getBuffer().toString().getBytes(encoding));
-                handler.writeTo(out);
+                BASE64Encoder base64Encoder = new BASE64Encoder();
+                if ("base64".equals(contentTransferEncoding)) {
+                    base64Encoder.encode(handler.getInputStream(), out);
+                } else {
+                    handler.writeTo(out);
+                }
             }
         }
         StringWriter writer = new StringWriter();                
