@@ -27,7 +27,7 @@
     <parent>
         <groupId>org.apache.cxf</groupId>
         <artifactId>cxf-parent</artifactId>
-        <version>3.2.0-SNAPSHOT</version>
+        <version>3.2.0-java9-SNAPSHOT</version>
         <relativePath>../../../parent/pom.xml</relativePath>
     </parent>
     <properties>
@@ -180,6 +180,7 @@
                         <phase>generate-test-sources</phase>
                         <configuration>
                             <fork>${cxf.codegenplugin.forkmode}</fork>
+                            <additionalJvmArgs>${cxf.codegen.jvmArgs}</additionalJvmArgs>
                             <testSourceRoot>${basedir}/target/generated/src/test/java</testSourceRoot>
                             <wsdlOptions>
                                 <wsdlOption>

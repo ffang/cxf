@@ -27,7 +27,7 @@
     <parent>
         <groupId>org.apache.cxf</groupId>
         <artifactId>cxf-parent</artifactId>
-        <version>3.2.0-SNAPSHOT</version>
+        <version>3.2.0-java9-SNAPSHOT</version>
         <relativePath>../../../parent/pom.xml</relativePath>
     </parent>
     <dependencies>
@@ -82,6 +82,8 @@
                             <goal>xsdtojava</goal>
                         </goals>
                         <configuration>
+                            <fork>true</fork>
+                            <additionalJvmArgs>${cxf.xjc.jvmArgs}</additionalJvmArgs>
                             <extensions>
                                 <extension>org.apache.cxf.xjcplugins:cxf-xjc-dv:${cxf.xjc-utils.version}</extension>
                             </extensions>

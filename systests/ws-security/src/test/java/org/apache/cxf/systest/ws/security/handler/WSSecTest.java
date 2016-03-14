@@ -26,6 +26,10 @@ import javax.xml.ws.Service;
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
 import org.apache.cxf.bus.spring.SpringBusFactory;
+import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.interceptor.LoggingInInterceptor;
+import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.systest.ws.common.SecurityTestUtil;
 import org.apache.cxf.testutil.common.AbstractBusClientServerTestBase;
 import org.junit.BeforeClass;
@@ -58,6 +62,9 @@ public class WSSecTest extends AbstractBusClientServerTestBase {
         QName portName = new QName("http://cxf.apache.org/wsse/handler/helloworld", "HelloWorldPort");
 
         HelloWorld port = service.getPort(portName, HelloWorld.class);
+        Client client = ClientProxy.getClient(port);
+        client.getOutInterceptors().add(new LoggingOutInterceptor());
+        client.getInInterceptors().add(new LoggingInInterceptor());
         updateAddressPort(port, PORT);
         assertEquals("Hello CXF", port.sayHello("CXF"));
         

@@ -21,7 +21,7 @@
     <parent>
         <artifactId>cxf-parent</artifactId>
         <groupId>org.apache.cxf</groupId>
-        <version>3.2.0-SNAPSHOT</version>
+        <version>3.2.0-java9-SNAPSHOT</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -30,10 +30,6 @@
     <name>Apache CXF Distributed Tracing Integration System Tests</name>
     <description>Apache CXF Distributed Tracing Integration System Tests</description>
     <url>http://cxf.apache.org</url>
-    <properties>
-        <cxf.surefire.fork.vmargs>-XX:MaxPermSize=192m</cxf.surefire.fork.vmargs>
-        <cxf.server.launcher.vmargs>-XX:MaxPermSize=192m</cxf.server.launcher.vmargs>
-    </properties>
     <dependencies>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
@@ -91,10 +87,16 @@
         </dependency>
         <dependency>
             <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!--dependency>
+            <groupId>javax.annotation</groupId>
             <artifactId>jsr250-api</artifactId>
             <version>1.0</version>
             <scope>test</scope>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

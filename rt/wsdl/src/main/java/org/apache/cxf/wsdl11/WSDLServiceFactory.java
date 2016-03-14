@@ -73,6 +73,7 @@ public class WSDLServiceFactory extends AbstractServiceFactoryBean {
             // use wsdl manager to parse wsdl or get cached definition
             definition = getBus().getExtension(WSDLManager.class).getDefinition(url);
         } catch (WSDLException ex) {
+            ex.printStackTrace();
             throw new ServiceConstructionException(new Message("SERVICE_CREATION_MSG", LOG), ex);
         }
     }

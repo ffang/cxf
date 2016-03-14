@@ -21,7 +21,7 @@
     <parent>
         <artifactId>cxf-parent</artifactId>
         <groupId>org.apache.cxf</groupId>
-        <version>3.2.0-SNAPSHOT</version>
+        <version>3.2.0-java9-SNAPSHOT</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -192,5 +192,15 @@
                 </dependency>
             </dependencies>
         </profile>
+        <!--profile>
+            <id>java9</id>
+            <properties>
+                <cxf.surefire.fork.vmargs>-ea -Xpatch:java.transaction=src/main/resources/java9/geronimo-jta_1.1_spec-1.1.1.jar -addmods java.activation,java.annotations.common,java.corba,java.transaction,java.xml.bind,java.xml.ws,jdk.xml.bind</cxf.surefire.fork.vmargs>
+                <cxf.server.launcher.vmargs>-Xpatch:java.transaction=src/main/resources/java9/geronimo-jta_1.1_spec-1.1.1.jar -addmods java.activation,java.annotations.common,java.corba,java.transaction,java.xml.bind,java.xml.ws,jdk.xml.bind</cxf.server.launcher.vmargs>
+            </properties>
+            <activation>
+                <jdk>9</jdk>
+            </activation>
+        </profile-->
     </profiles>
 </project>

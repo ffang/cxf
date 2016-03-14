@@ -21,7 +21,7 @@
     <parent>
         <artifactId>cxf-parent</artifactId>
         <groupId>org.apache.cxf</groupId>
-        <version>3.2.0-SNAPSHOT</version>
+        <version>3.2.0-java9-SNAPSHOT</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -31,8 +31,6 @@
     <description>Apache CXF Servlet Container Initializer Integration System Tests</description>
     <url>http://cxf.apache.org</url>
     <properties>
-        <cxf.surefire.fork.vmargs>-XX:MaxPermSize=192m</cxf.surefire.fork.vmargs>
-        <cxf.server.launcher.vmargs>-XX:MaxPermSize=192m</cxf.server.launcher.vmargs>
         <cxf.jetty.version>${cxf.jetty9.version}</cxf.jetty.version>
     </properties>
     <dependencies>

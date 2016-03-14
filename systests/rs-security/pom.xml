@@ -21,7 +21,7 @@
     <parent>
         <artifactId>cxf-parent</artifactId>
         <groupId>org.apache.cxf</groupId>
-        <version>3.2.0-SNAPSHOT</version>
+        <version>3.2.0-java9-SNAPSHOT</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -216,12 +216,24 @@
                 </dependency>
             </dependencies>
         </profile>
+        <profile>
+            <id>java9</id>
+            <properties>
+                <cxf.surefire.fork.vmargs>-ea -XX:MaxMetaspaceSize=1024m -Xpatch:java.annotations.common=src/main/resources/java9/javax.annotation-api-1.2.jar -Xpatch:java.transaction=src/main/resources/java9/geronimo-jta_1.1_spec-1.1.1.jar -XaddExports:java.annotations.common/javax.annotation.security=ALL-UNNAMED  -XaddExports:java.xml/com.sun.org.apache.xerces.internal.dom=ALL-UNNAMED -XaddExports:java.xml.ws/com.sun.xml.internal.messaging.saaj.soap=ALL-UNNAMED -XaddExports:jdk.xml.bind/com.sun.tools.internal.xjc.api=ALL-UNNAMED -XaddExports:jdk.xml.bind/com.sun.tools.internal.xjc.api.impl.s2j=ALL-UNNAMED -XaddExports:jdk.xml.bind/com.sun.tools.internal.xjc=ALL-UNNAMED -XaddExports:jdk.xml.bind/com.sun.codemodel.internal=ALL-UNNAMED -XaddExports:jdk.xml.bind/com.sun.codemodel.internal.writer=ALL-UNNAMED -XaddExports:java.base/sun.reflect.generics.reflectiveObjects=ALL-UNNAMED -XaddExports:java.base/sun.security.util=ALL-UNNAMED -addmods java.activation,java.annotations.common,java.corba,java.transaction,java.xml.bind,java.xml.ws,jdk.xml.bind</cxf.surefire.fork.vmargs>
+                <cxf.server.launcher.vmargs>-ea -XX:MaxMetaspaceSize=1024m -Xpatch:java.annotations.common=src/main/resources/java9/javax.annotation-api-1.2.jar -Xpatch:java.transaction=src/main/resources/java9/geronimo-jta_1.1_spec-1.1.1.jar -XaddExports:java.xml/com.sun.org.apache.xerces.internal.dom=ALL-UNNAMED -XaddExports:java.xml.ws/com.sun.xml.internal.messaging.saaj.soap=ALL-UNNAMED -XaddExports:jdk.xml.bind/com.sun.tools.internal.xjc.api=ALL-UNNAMED -XaddExports:jdk.xml.bind/com.sun.tools.internal.xjc.api.impl.s2j=ALL-UNNAMED -XaddExports:jdk.xml.bind/com.sun.tools.internal.xjc=ALL-UNNAMED -XaddExports:jdk.xml.bind/com.sun.codemodel.internal=ALL-UNNAMED -XaddExports:jdk.xml.bind/com.sun.codemodel.internal.writer=ALL-UNNAMED -XaddExports:java.base/sun.reflect.generics.reflectiveObjects=ALL-UNNAMED -XaddExports:java.base/sun.security.util=ALL-UNNAMED -addmods java.activation,java.annotations.common,java.corba,java.transaction,java.xml.bind,java.xml.ws,jdk.xml.bind</cxf.server.launcher.vmargs>
+                <cxf.codegen.jvmArgs>-XaddExports:java.xml/com.sun.org.apache.xerces.internal.impl.xs=ALL-UNNAMED -addmods java.activation,java.annotations.common,java.corba,java.transaction,java.xml.bind,java.xml.ws,jdk.xml.bind</cxf.codegen.jvmArgs>
+                <cxf.codegenplugin.forkmode>true</cxf.codegenplugin.forkmode>
+            </properties>
+            <activation>
+                <jdk>9</jdk>
+            </activation>
+        </profile>
     </profiles>
-    <repositories>
+    <!--repositories>
         <repository>
             <id>oauth</id>
             <name>OAuth Repository</name>
             <url>http://oauth.googlecode.com/svn/code/maven/</url>
         </repository>
-    </repositories>
+    </repositories-->
 </project>

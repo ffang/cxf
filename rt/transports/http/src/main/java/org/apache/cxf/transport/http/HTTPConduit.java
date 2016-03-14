@@ -1279,6 +1279,7 @@ public abstract class HTTPConduit
             try {
                 handleHeadersTrustCaching();
             } catch (IOException e) {
+                e.printStackTrace();
                 if (e.getMessage() != null && e.getMessage().contains("HTTPS hostname wrong:")) {
                     throw new IOException("The https URL hostname does not match the " 
                         + "Common Name (CN) on the server certificate in the client's truststore.  " 

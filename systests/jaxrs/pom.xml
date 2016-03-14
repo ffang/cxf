@@ -21,7 +21,7 @@
     <parent>
         <artifactId>cxf-parent</artifactId>
         <groupId>org.apache.cxf</groupId>
-        <version>3.2.0-SNAPSHOT</version>
+        <version>3.2.0-java9-SNAPSHOT</version>
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -33,9 +33,8 @@
     <properties>
         <cxf.el.api.version>3.0-b02</cxf.el.api.version>
         <cxf.glassfish.el.version>3.0-b01</cxf.glassfish.el.version>
-        <cxf.surefire.fork.vmargs>-XX:MaxPermSize=192m</cxf.surefire.fork.vmargs>
-        <cxf.server.launcher.vmargs>-XX:MaxPermSize=192m</cxf.server.launcher.vmargs>
-
+        <!--cxf.surefire.fork.vmargs>-ea -XX:MaxMetaspaceSize=1024m</cxf.surefire.fork.vmargs>
+        <cxf.server.launcher.vmargs>-ea -XX:MaxMetaspaceSize=1024m</cxf.server.launcher.vmargs-->
     </properties>
     <dependencies>
         <!-- for swagger 1.2 tests -->
@@ -510,7 +509,16 @@
                     <groupId>org.apache.poi</groupId>
                     <artifactId>poi-ooxml</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk15</artifactId>
+                </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.skyscreamer</groupId>
@@ -559,6 +567,8 @@
                         <id>generate-sources</id>
                         <phase>generate-sources</phase>
                         <configuration>
+                            <fork>${cxf.codegenplugin.forkmode}</fork>
+                            <additionalJvmArgs>${cxf.codegen.jvmArgs}</additionalJvmArgs>
                             <sourceRoot>${basedir}/target/generated/src/main/java</sourceRoot>
                             <wadlOptions>
                                 <wadlOption>
@@ -614,6 +624,37 @@
             <id>jetty9</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.eclipse.jetty.websocket</groupId>
+                    <artifactId>websocket-server</artifactId>
+                    <version>${cxf.jetty9.version}</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>javax.servlet</groupId>
+                            <artifactId>javax.servlet-api</artifactId>
+                        </exclusion>
+                    </exclusions>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-jaas</artifactId>
+                    <version>${cxf.jetty9.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>java9</id>
+            <properties>
+                <cxf.surefire.fork.vmargs>-ea -XX:MaxMetaspaceSize=1024m -Xpatch:java.annotations.common=src/main/resources/java9/javax.annotation-api-1.2.jar -Xpatch:java.transaction=src/main/resources/java9/geronimo-jta_1.1_spec-1.1.1.jar -XaddExports:java.annotations.common/javax.annotation.security=ALL-UNNAMED  -XaddExports:java.xml/com.sun.org.apache.xerces.internal.dom=ALL-UNNAMED -XaddExports:java.xml.ws/com.sun.xml.internal.messaging.saaj.soap=ALL-UNNAMED -XaddExports:jdk.xml.bind/com.sun.tools.internal.xjc.api=ALL-UNNAMED -XaddExports:jdk.xml.bind/com.sun.tools.internal.xjc.api.impl.s2j=ALL-UNNAMED -XaddExports:jdk.xml.bind/com.sun.tools.internal.xjc=ALL-UNNAMED -XaddExports:jdk.xml.bind/com.sun.codemodel.internal=ALL-UNNAMED -XaddExports:jdk.xml.bind/com.sun.codemodel.internal.writer=ALL-UNNAMED -XaddExports:java.base/sun.reflect.generics.reflectiveObjects=ALL-UNNAMED -XaddExports:java.base/sun.security.util=ALL-UNNAMED -addmods java.activation,java.annotations.common,java.corba,java.transaction,java.xml.bind,java.xml.ws,jdk.xml.bind</cxf.surefire.fork.vmargs>
+                <cxf.server.launcher.vmargs>-ea -XX:MaxMetaspaceSize=1024m -Xpatch:java.annotations.common=src/main/resources/java9/javax.annotation-api-1.2.jar -Xpatch:java.transaction=src/main/resources/java9/geronimo-jta_1.1_spec-1.1.1.jar -XaddExports:java.xml/com.sun.org.apache.xerces.internal.dom=ALL-UNNAMED -XaddExports:java.xml.ws/com.sun.xml.internal.messaging.saaj.soap=ALL-UNNAMED -XaddExports:jdk.xml.bind/com.sun.tools.internal.xjc.api=ALL-UNNAMED -XaddExports:jdk.xml.bind/com.sun.tools.internal.xjc.api.impl.s2j=ALL-UNNAMED -XaddExports:jdk.xml.bind/com.sun.tools.internal.xjc=ALL-UNNAMED -XaddExports:jdk.xml.bind/com.sun.codemodel.internal=ALL-UNNAMED -XaddExports:jdk.xml.bind/com.sun.codemodel.internal.writer=ALL-UNNAMED -XaddExports:java.base/sun.reflect.generics.reflectiveObjects=ALL-UNNAMED -XaddExports:java.base/sun.security.util=ALL-UNNAMED -addmods java.activation,java.annotations.common,java.corba,java.transaction,java.xml.bind,java.xml.ws,jdk.xml.bind</cxf.server.launcher.vmargs>
+                <cxf.codegen.jvmArgs>-XaddExports:java.xml/com.sun.org.apache.xerces.internal.impl.xs=ALL-UNNAMED -addmods java.activation,java.annotations.common,java.corba,java.transaction,java.xml.bind,java.xml.ws,jdk.xml.bind</cxf.codegen.jvmArgs>
+                <cxf.codegenplugin.forkmode>true</cxf.codegenplugin.forkmode>
+            </properties>
+            <activation>
+                <jdk>9</jdk>
             </activation>
             <dependencies>
                 <dependency>

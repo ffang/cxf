@@ -125,7 +125,8 @@ public class SecureAnnotationsInterceptor extends SimpleAuthorizingInterceptor {
                     }
                     return sb.toString();
                 } catch (Exception ex) {
-                    // ignore    
+                    // ignore  
+                    ex.printStackTrace();
                 }
                 break;
             }
