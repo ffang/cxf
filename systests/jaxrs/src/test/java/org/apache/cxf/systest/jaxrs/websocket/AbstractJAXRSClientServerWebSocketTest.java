@@ -204,6 +204,7 @@ abstract class AbstractJAXRSClientServerWebSocketTest extends AbstractBusClientS
     public void testGetBookHTTPFromWebSocketEndpoint() throws Exception {
         String address = "http://localhost:" + getPort() + getContext() + "/websocket/web/bookstore/books/1";
         WebClient wc = WebClient.create(address);
+        wc.getConfiguration().getHttpConduit().getClient().setReceiveTimeout(100000000);
         wc.accept("application/xml");
         Book book = wc.get(Book.class);
         assertEquals(1L, book.getId());

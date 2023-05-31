@@ -50,7 +50,7 @@
         <module>rs-http-sci</module>
         <module>tracing</module>
         <module>ws-transfer</module>
-        <module>rs-sse</module>
+        <module>rs-sse</module><!--flaky-->
         <module>microprofile</module>
         <module>spring-boot</module>
         <module>transport-netty</module>
