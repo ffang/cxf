@@ -33,6 +33,8 @@
     
     <properties>
         <cxf.module.name>org.apache.cxf.systests.ws.security.examples</cxf.module.name>
+        <!-- Override wss4j version to pick up PQC (ML-DSA / ML-KEM) support. -->
+        <cxf.jakarta.wss4j.version>4.0.2-SNAPSHOT</cxf.jakarta.wss4j.version>
     </properties>
     
     <build>
@@ -185,6 +187,18 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk18on</artifactId>
+            <version>${cxf.bcprov.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk18on</artifactId>
+            <version>${cxf.bcprov.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
