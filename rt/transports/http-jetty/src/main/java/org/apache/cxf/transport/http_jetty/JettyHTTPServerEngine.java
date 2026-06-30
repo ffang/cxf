@@ -857,7 +857,21 @@ public class JettyHTTPServerEngine implements ServerEngine, HttpServerEngineSupp
     protected SSLContext createSSLContext(SslContextFactory scf) throws Exception  {
         // The full SSL context is provided by SSLContextServerParameters
         if (tlsServerParameters instanceof SSLContextServerParameters sslContextServerParameters) {
-            return sslContextServerParameters.getSslContext();
+            SSLContext context = sslContextServerParameters.getSslContext();
+            // Without setting included cipher suites here, Jetty's default
+            // SslContextFactory filter drops suite names it does not
+            // recognise (e.g. BouncyCastle JSSE names), causing
+            // handshake_failure even if the SSLContext supports them.
+            String[] supported =
+                SSLUtils.getServerSupportedCipherSuites(context);
+            String[] included = SSLUtils.getCiphersuitesToInclude(
+                tlsServerParameters.getCipherSuites(),
+                tlsServerParameters.getCipherSuitesFilter(),
+                context.getServerSocketFactory().getDefaultCipherSuites(),
+                supported,
+                LOG);
+            scf.setIncludeCipherSuites(included);
+            return context;
         }
 
         String proto = tlsServerParameters.getSecureSocketProtocol() == null
