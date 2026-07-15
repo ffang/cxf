@@ -52,7 +52,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * WS-SecurityPolicy-driven tests for Post-Quantum Cryptography signing algorithms.
+ * WS-SecurityPolicy-driven tests for Post-Quantum Cryptography algorithms.
  *
  * <p>Security policy is declared in XML policy files using the WS-SP 1.2 namespace.
  * Each test uses one of the PQC algorithm suites defined in wss4j:
@@ -63,9 +63,15 @@ import org.junit.Test;
  * </ul>
  *
  * <p>The {@link PolicyBasedWSS4JOutInterceptor} reads the algorithm suite from the
- * {@link AssertionInfoMap} and selects the ML-DSA signing algorithm automatically.
- * Crypto is injected via {@link SecurityConstants#SIGNATURE_CRYPTO} so no properties
- * files are needed.
+ * {@link AssertionInfoMap} and selects the ML-DSA signing / ML-KEM key-wrap algorithm
+ * automatically (via {@code AlgorithmSuiteType#getAsymmetricSignature()}/
+ * {@code #getAsymmetricKeyWrap()}) - no PQC-specific code exists in CXF itself, this is
+ * purely generic algorithm-suite-driven configuration. The ML-KEM key transport goes over
+ * the W3C "XML Security: Generic Hybrid Cipher" wire structure (see SANTUARIO-633),
+ * produced by wss4j's {@code WSSecEncryptedKey}/{@code EncryptedKeyProcessor}.
+ *
+ * <p>Crypto is injected via {@link SecurityConstants#SIGNATURE_CRYPTO}/{@link
+ * SecurityConstants#ENCRYPT_CRYPTO} so no properties files are needed.
  */
 public class PQCPolicyTest extends AbstractPolicySecurityTest {
 
@@ -78,6 +84,10 @@ public class PQCPolicyTest extends AbstractPolicySecurityTest {
     private static Merlin mlDsa44Crypto;
     private static Merlin mlDsa65Crypto;
     private static Merlin mlDsa87Crypto;
+
+    private static Merlin mlKem512Crypto;
+    private static Merlin mlKem768Crypto;
+    private static Merlin mlKem1024Crypto;
 
     /** Set by each test before calling runAndValidate; overrides the classical crypto. */
     private Merlin currentCrypto;
@@ -98,6 +108,9 @@ public class PQCPolicyTest extends AbstractPolicySecurityTest {
             mlDsa44Crypto = buildMLDSACrypto("ML-DSA-44");
             mlDsa65Crypto = buildMLDSACrypto("ML-DSA-65");
             mlDsa87Crypto = buildMLDSACrypto("ML-DSA-87");
+            mlKem512Crypto = buildMLKEMCrypto("ML-KEM-512");
+            mlKem768Crypto = buildMLKEMCrypto("ML-KEM-768");
+            mlKem1024Crypto = buildMLKEMCrypto("ML-KEM-1024");
             bcAvailable = true;
         } catch (Exception e) {
             bcAvailable = false;
@@ -149,6 +162,46 @@ public class PQCPolicyTest extends AbstractPolicySecurityTest {
             null, null,
             Arrays.asList(SP12Constants.SIGNED_PARTS), null,
             Arrays.asList(CoverageType.SIGNED));
+    }
+
+    // -------------------------------------------------------------------------
+    // Tests: ML-KEM encryption via WS-SecurityPolicy algorithm suites
+    // -------------------------------------------------------------------------
+
+    @Test
+    public void testMLKEM512PolicyEncrypt() throws Exception {
+        Assume.assumeTrue("BC 1.84+ required for ML-KEM", bcAvailable);
+        currentCrypto = mlKem512Crypto;
+        runAndValidate(
+            "wsse-request-clean.xml",
+            "pqc_basic128_mldsa44_encrypt_policy.xml",
+            null, null,
+            Arrays.asList(SP12Constants.ENCRYPTED_PARTS), null,
+            Arrays.asList(CoverageType.ENCRYPTED));
+    }
+
+    @Test
+    public void testMLKEM768PolicyEncrypt() throws Exception {
+        Assume.assumeTrue("BC 1.84+ required for ML-KEM", bcAvailable);
+        currentCrypto = mlKem768Crypto;
+        runAndValidate(
+            "wsse-request-clean.xml",
+            "pqc_basic256_mldsa65_encrypt_policy.xml",
+            null, null,
+            Arrays.asList(SP12Constants.ENCRYPTED_PARTS), null,
+            Arrays.asList(CoverageType.ENCRYPTED));
+    }
+
+    @Test
+    public void testMLKEM1024PolicyEncrypt() throws Exception {
+        Assume.assumeTrue("BC 1.84+ required for ML-KEM", bcAvailable);
+        currentCrypto = mlKem1024Crypto;
+        runAndValidate(
+            "wsse-request-clean.xml",
+            "pqc_basic256_mldsa87_encrypt_policy.xml",
+            null, null,
+            Arrays.asList(SP12Constants.ENCRYPTED_PARTS), null,
+            Arrays.asList(CoverageType.ENCRYPTED));
     }
 
     // -------------------------------------------------------------------------
@@ -229,6 +282,38 @@ public class PQCPolicyTest extends AbstractPolicySecurityTest {
         ks.load(null, KS_PASSWORD);
         ks.setKeyEntry(ALIAS, kp.getPrivate(), KS_PASSWORD,
             new java.security.cert.Certificate[]{cert});
+        Merlin merlin = new Merlin();
+        merlin.setKeyStore(ks);
+        merlin.setTrustStore(ks);
+        return merlin;
+    }
+
+    /**
+     * Builds a Merlin keystore for ML-KEM: private key is ML-KEM, cert is EC-signed
+     * (ML-KEM keys cannot self-sign).
+     */
+    private static Merlin buildMLKEMCrypto(String mlKemAlgorithm) throws Exception {
+        KeyPair kemKP = KeyPairGenerator.getInstance(mlKemAlgorithm, "BC").generateKeyPair();
+
+        // ML-KEM keys cannot sign; use an ephemeral EC key to sign the certificate.
+        KeyPair ecSignKP = KeyPairGenerator.getInstance("EC", "BC").generateKeyPair();
+
+        X500Name subject = new X500Name("CN=" + mlKemAlgorithm + " Test, O=CXF PQC Test");
+        Date notBefore = new Date();
+        Date notAfter = new Date(notBefore.getTime() + 365L * 86_400_000L);
+        ContentSigner signer = new JcaContentSignerBuilder("SHA256withECDSA")
+            .setProvider("BC").build(ecSignKP.getPrivate());
+        X509Certificate cert = new JcaX509CertificateConverter()
+            .setProvider("BC")
+            .getCertificate(new JcaX509v3CertificateBuilder(
+                subject, BigInteger.ONE, notBefore, notAfter, subject, kemKP.getPublic())
+                .build(signer));
+
+        KeyStore ks = KeyStore.getInstance("PKCS12", "BC");
+        ks.load(null, KS_PASSWORD);
+        ks.setKeyEntry(ALIAS, kemKP.getPrivate(), KS_PASSWORD,
+            new java.security.cert.Certificate[]{cert});
+
         Merlin merlin = new Merlin();
         merlin.setKeyStore(ks);
         merlin.setTrustStore(ks);

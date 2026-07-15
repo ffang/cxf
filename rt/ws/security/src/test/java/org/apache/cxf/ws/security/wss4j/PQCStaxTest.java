@@ -146,17 +146,17 @@ public class PQCStaxTest extends AbstractSecurityTest {
 
     @Test
     public void testMLDSA44StaxSignVerify() throws Exception {
-        runMLDSASignVerifyTest("http://www.w3.org/2021/04/xmldsig-more#ml-dsa-44", mlDsa44KeyStore);
+        runMLDSASignVerifyTest(WSS4JConstants.ML_DSA_44, mlDsa44KeyStore);
     }
 
     @Test
     public void testMLDSA65StaxSignVerify() throws Exception {
-        runMLDSASignVerifyTest("http://www.w3.org/2021/04/xmldsig-more#ml-dsa-65", mlDsa65KeyStore);
+        runMLDSASignVerifyTest(WSS4JConstants.ML_DSA_65, mlDsa65KeyStore);
     }
 
     @Test
     public void testMLDSA87StaxSignVerify() throws Exception {
-        runMLDSASignVerifyTest("http://www.w3.org/2021/04/xmldsig-more#ml-dsa-87", mlDsa87KeyStore);
+        runMLDSASignVerifyTest(WSS4JConstants.ML_DSA_87, mlDsa87KeyStore);
     }
 
     // -------------------------------------------------------------------------
