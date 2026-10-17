@@ -222,6 +222,8 @@ public class RMCaptureOutInterceptor extends AbstractRMInterceptor<Message>  {
     }
     private void captureMessage(Message message) {
         message.put(RMMessageConstants.MESSAGE_CAPTURE, Boolean.TRUE);
+        // the AttachmentOutInterceptor replaces the content type, so keep the original one for retransmissions
+        message.put(RMMessageConstants.SAVED_CONTENT_TYPE, message.get(Message.CONTENT_TYPE));
 
         message.getInterceptorChain().add(new CaptureStart());
         message.getInterceptorChain().add(new CaptureEnd());
