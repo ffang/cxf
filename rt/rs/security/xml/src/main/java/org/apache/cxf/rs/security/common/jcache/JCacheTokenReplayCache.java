@@ -30,7 +30,6 @@ import java.util.logging.Logger;
 import javax.cache.Cache;
 import javax.cache.CacheManager;
 import javax.cache.Caching;
-import javax.cache.configuration.MutableConfiguration;
 import javax.cache.spi.CachingProvider;
 
 import org.apache.cxf.Bus;
@@ -38,6 +37,7 @@ import org.apache.cxf.BusFactory;
 import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.jaxrs.utils.ResourceUtils;
 import org.apache.cxf.rs.security.common.TokenReplayCache;
+import org.apache.cxf.rt.security.utils.JCacheUtils;
 import org.apache.wss4j.common.cache.EHCacheValue;
 import org.apache.wss4j.common.util.Loader;
 
@@ -52,9 +52,9 @@ public class JCacheTokenReplayCache implements TokenReplayCache<String> {
     private static final Logger LOG = LogUtils.getL7dLogger(JCacheTokenReplayCache.class);
     private static final String DEFAULT_CONFIG_URL = "/cxf-rs-security-replay-jcache.xml";
 
-    private final String cacheKey;
     private final Cache<String, EHCacheValue> cache;
     private final CacheManager cacheManager;
+    private boolean closed;
 
     public JCacheTokenReplayCache() throws URISyntaxException {
         this(DEFAULT_CONFIG_URL, null);
@@ -81,7 +81,6 @@ public class JCacheTokenReplayCache implements TokenReplayCache<String> {
      */
     protected JCacheTokenReplayCache(String cacheKey, String configFile, String defaultConfigFile, Bus bus)
         throws URISyntaxException {
-        this.cacheKey = cacheKey;
         if (bus == null) {
             bus = BusFactory.getThreadDefaultBus(true);
         }
@@ -97,23 +96,14 @@ public class JCacheTokenReplayCache implements TokenReplayCache<String> {
         URL resolvedConfigFileURL = getConfigFileURL(configFileURL, defaultConfigFile);
         URI configURI = resolvedConfigFileURL != null
             ? resolvedConfigFileURL.toURI() : cachingProvider.getDefaultURI();
-        cacheManager = cachingProvider.getCacheManager(configURI, getClass().getClassLoader());
+        cacheManager = JCacheUtils.getCacheManager(cachingProvider, configURI, getClass().getClassLoader());
 
-        cache = getOrCreate(cacheManager, cacheKey, String.class, EHCacheValue.class);
-    }
-
-    private static <K, V> Cache<K, V> getOrCreate(CacheManager cacheManager, String name,
-            Class<K> kclass, Class<V> vclass) {
-
-        final Cache<K, V> cache = cacheManager.getCache(name, kclass, vclass);
-        if (cache != null) {
-            return cache;
+        try {
+            cache = JCacheUtils.getOrCreate(cacheManager, cacheKey, String.class, EHCacheValue.class);
+        } catch (RuntimeException ex) {
+            JCacheUtils.releaseCacheManager(cacheManager);
+            throw ex;
         }
-
-        final MutableConfiguration<K, V> cacheConfiguration = new MutableConfiguration<>();
-        cacheConfiguration.setTypes(kclass, vclass);
-
-        return cacheManager.createCache(name, cacheConfiguration);
     }
 
     private static URL getConfigFileURL(URL suppliedConfigFileURL, String defaultConfigFile) {
@@ -184,9 +174,10 @@ public class JCacheTokenReplayCache implements TokenReplayCache<String> {
     }
 
     public synchronized void close() {
-        if (!cacheManager.isClosed()) {
-            cacheManager.destroyCache(cacheKey);
-            cacheManager.close();
+        if (!closed) {
+            closed = true;
+            JCacheUtils.release(cache);
+            JCacheUtils.releaseCacheManager(cacheManager);
         }
     }
 
