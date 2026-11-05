@@ -28,6 +28,8 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.TreeSet;
+import java.util.function.Consumer;
 
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
@@ -35,9 +37,12 @@ import javax.net.ssl.X509TrustManager;
 import org.apache.cxf.Bus;
 import org.apache.cxf.bus.extension.ExtensionManagerBus;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
+import org.apache.cxf.configuration.security.CertificateConstraintsType;
+import org.apache.cxf.configuration.security.DNConstraintsType;
 import org.apache.cxf.configuration.security.FiltersType;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageImpl;
+import org.apache.cxf.phase.PhaseInterceptorChain;
 import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 
@@ -224,6 +229,89 @@ public class HttpClientHTTPConduitSharedClientTest {
         }
     }
 
+    @Test
+    public void testMessageConnectionTimeoutIsPartOfKey() throws Exception {
+        // conduit 1 overrides the connection timeout per request, so its client is built with 1s
+        HttpClientHTTPConduit conduit1 = newConduit("http");
+        HttpClient client1 = prepare(conduit1, m -> m.put(Message.CONNECTION_TIMEOUT, "1000"));
+        assertEquals(Optional.of(Duration.ofSeconds(1)), client1.connectTimeout());
+
+        // conduit 2 with the default timeout must not share conduit 1's 1s client
+        HttpClientHTTPConduit conduit2 = newConduit("http");
+        HttpClient client2 = prepare(conduit2);
+        assertEquals(Optional.of(Duration.ofSeconds(30)), client2.connectTimeout());
+        assertNotSame(client1, client2);
+    }
+
+    @Test
+    public void testPerRequestConnectionTimeoutChangeHonored() throws Exception {
+        HttpClientHTTPConduit conduit = newConduit("http");
+        HttpClient client = prepare(conduit);
+        assertEquals(Optional.of(Duration.ofSeconds(30)), client.connectTimeout());
+
+        // a later per-request change to the connection timeout must be applied, not ignored
+        HttpClient faster = prepare(conduit, m -> m.put(Message.CONNECTION_TIMEOUT, "1000"));
+        assertNotSame(client, faster);
+        assertEquals(Optional.of(Duration.ofSeconds(1)), faster.connectTimeout());
+    }
+
+    @Test
+    public void testForcedHttpVersionIsPartOfKey() throws Exception {
+        // conduit 1 forces HTTP/1.1 per request, so its client is built for HTTP/1.1
+        HttpClientHTTPConduit conduit1 = newConduit("http");
+        HttpClient client1 = prepare(conduit1, m -> m.put(HTTPConduit.FORCE_HTTP_VERSION, "1.1"));
+        assertEquals(HttpClient.Version.HTTP_1_1, client1.version());
+
+        // conduit 2 with the default version must not share conduit 1's HTTP/1.1 client
+        HttpClientHTTPConduit conduit2 = newConduit("http");
+        assertNotSame(client1, prepare(conduit2));
+    }
+
+    @Test
+    public void testChangedCertConstraintsKeepClient() throws Exception {
+        HttpClientHTTPConduit conduit = newConduit("https");
+        TLSClientParameters tls = new TLSClientParameters();
+        tls.setCertConstraints(certConstraints("CN=one"));
+        conduit.setTlsClientParameters(tls);
+        // cert constraints add an interceptor to the chain, so the message needs one
+        Consumer<Message> withChain = m -> m.setInterceptorChain(new PhaseInterceptorChain(new TreeSet<>()));
+        HttpClient client = prepare(conduit, withChain);
+
+        // the certificate constraints are checked per response, not built into the client, so changing
+        // them, in place or by replacement, must not rebuild the client
+        tls.getCertConstraints().getSubjectDNConstraints().getRegularExpression().add("CN=two");
+        assertSame(client, prepare(conduit, withChain));
+        tls.setCertConstraints(certConstraints("CN=three"));
+        assertSame(client, prepare(conduit, withChain));
+    }
+
+    @Test
+    public void testHttpsResetClientIsNotReused() throws Exception {
+        // sharing is off, so each build makes a distinct client, and the host is set per request
+        HttpClientHTTPConduit conduit = newConduit("https");
+        final Consumer<Message> hostA = m -> share(m, false);
+        final Consumer<Message> hostB = m -> {
+            m.put(Message.ENDPOINT_ADDRESS, "https://other.example/test");
+            share(m, false);
+        };
+        HttpClient clientA = prepare(conduit, hostA);
+
+        // a request to another host triggers the HTTPS reset, which drops clientA for the host change
+        HttpClient clientB = prepare(conduit, hostB);
+        assertNotSame(clientA, clientB);
+
+        // the connection timeout changes and changes back, on host B. Switching back is a settings reset,
+        // not an HTTPS reset, so it looks for a reusable client: it must take back clientB, not clientA,
+        // which was dropped for the host change.
+        conduit.getClient().setConnectionTimeout(1000);
+        assertNotSame(clientB, prepare(conduit, hostB));
+        conduit.getClient().setConnectionTimeout(30000);
+        HttpClient reused = prepare(conduit, hostB);
+
+        assertSame(clientB, reused);
+        assertNotSame(clientA, reused);
+    }
+
     private HttpClientHTTPConduit newConduit(String scheme) throws Exception {
         EndpointInfo ei = new EndpointInfo();
         ei.setAddress(scheme + "://backend.example/test");
@@ -235,6 +323,29 @@ public class HttpClientHTTPConduitSharedClientTest {
 
     private static HttpClient prepare(HttpClientHTTPConduit conduit) throws Exception {
         return prepare(conduit, null, true);
+    }
+
+    private static HttpClient prepare(HttpClientHTTPConduit conduit, Consumer<Message> customize)
+        throws Exception {
+        Message message = new MessageImpl();
+        message.put(Message.HTTP_REQUEST_METHOD, "GET");
+        customize.accept(message);
+        conduit.prepare(message);
+        HttpClient client = message.get(HttpClient.class);
+        assertNotNull(client);
+        return client;
+    }
+
+    private static void share(Message message, boolean share) {
+        message.put("share.httpclient.http.conduit", share);
+    }
+
+    private static CertificateConstraintsType certConstraints(String regex) {
+        DNConstraintsType subject = new DNConstraintsType();
+        subject.getRegularExpression().add(regex);
+        CertificateConstraintsType constraints = new CertificateConstraintsType();
+        constraints.setSubjectDNConstraints(subject);
+        return constraints;
     }
 
     private static HttpClient prepare(HttpClientHTTPConduit conduit, HTTPClientPolicy policy,
