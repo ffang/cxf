@@ -129,10 +129,21 @@ public class AsyncHTTPConduitFactory implements HTTPConduitFactory {
     private static class AsyncClient {
         private final PoolingAsyncClientConnectionManager connectionManager;
         private final CloseableHttpAsyncClient client;
+        // the conduits using the client, only changed within clients.compute()
+        private int references;
         
         AsyncClient(PoolingAsyncClientConnectionManager connectionManager, CloseableHttpAsyncClient client) {
             this.connectionManager = connectionManager;
             this.client = client;
+        }
+        
+        AsyncClient acquire() {
+            references++;
+            return this;
+        }
+        
+        int release() {
+            return --references;
         }
         
         public CloseableHttpAsyncClient getClient() {
@@ -421,8 +432,10 @@ public class AsyncHTTPConduitFactory implements HTTPConduitFactory {
     public CloseableHttpAsyncClient createClient(final URLConnectionHTTPConduit c, final TlsStrategy tlsStrategy) 
             throws IOException {
 
+        // conduits with the same policy share the client, and each one releases it with close()
         return clients
-            .computeIfAbsent(c.getClient(), key -> createNIOClient(key, tlsStrategy))
+            .compute(c.getClient(), (key, client) -> (client != null ? client : createNIOClient(key, tlsStrategy))
+                .acquire())
             .getClient();
     }
     
@@ -464,8 +477,20 @@ public class AsyncHTTPConduitFactory implements HTTPConduitFactory {
         }
     }
 
+    /**
+     * Releases the client a conduit got from {@link #createClient} for this policy, and shuts it down once
+     * no conduit uses it any longer
+     */
     public void close(HTTPClientPolicy clientPolicy) {
-        final AsyncClient client = clients.remove(clientPolicy);
+        final AsyncClient[] released = new AsyncClient[1];
+        clients.computeIfPresent(clientPolicy, (key, client) -> {
+            if (client.release() > 0) {
+                return client;
+            }
+            released[0] = client;
+            return null;
+        });
+        final AsyncClient client = released[0];
         if (client != null) {
             shutdown(client.getClient());
             client.getConnectionManager().close();
