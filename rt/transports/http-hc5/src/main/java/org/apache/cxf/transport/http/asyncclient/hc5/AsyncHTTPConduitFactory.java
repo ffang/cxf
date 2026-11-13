@@ -343,13 +343,11 @@ public class AsyncHTTPConduitFactory implements HTTPConduitFactory {
     }
 
     public synchronized void setupNIOClient(HTTPClientPolicy clientPolicy, final TlsStrategy tlsStrategy) {
-        final AsyncClient client = clients.get(clientPolicy);
-
-        if (client != null) {
-            return;
-        }
-        
-        clients.computeIfAbsent(clientPolicy, key -> createNIOClient(key, tlsStrategy));
+        // acquire a reference for the pre-created client too, so that every entry in the map is
+        // held by at least one reference and a conduit that later uses and closes this client does
+        // not shut it down. The mapping function runs only when absent, so repeated calls add no
+        // further reference.
+        clients.computeIfAbsent(clientPolicy, key -> createNIOClient(key, tlsStrategy).acquire());
     }
     
     private AsyncClient createNIOClient(HTTPClientPolicy clientPolicy, final TlsStrategy tlsStrategy) {
